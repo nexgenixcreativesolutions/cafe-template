@@ -206,13 +206,208 @@
     }
 
     @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
       to {
         opacity: 1;
         transform: translateY(0);
       }
+    }
+
+    @keyframes slideInLeft {
       from {
-        transform: translateY(30px);
+        opacity: 0;
+        transform: translateX(-60px);
       }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes floatBob {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.88);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes lineDraw {
+      from { width: 0; }
+      to   { width: 60px; }
+    }
+
+    /* ── Scroll-reveal base states ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.from-left  { transform: translateX(-60px); }
+    .reveal.from-right { transform: translateX(60px); }
+    .reveal.scale-up   { transform: scale(0.88); }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) translateX(0) scale(1);
+    }
+
+    /* Stagger delays for children */
+    .stagger .reveal:nth-child(1)  { transition-delay: 0s;    }
+    .stagger .reveal:nth-child(2)  { transition-delay: 0.12s; }
+    .stagger .reveal:nth-child(3)  { transition-delay: 0.24s; }
+    .stagger .reveal:nth-child(4)  { transition-delay: 0.36s; }
+    .stagger .reveal:nth-child(5)  { transition-delay: 0.48s; }
+    .stagger .reveal:nth-child(6)  { transition-delay: 0.60s; }
+    .stagger .reveal:nth-child(7)  { transition-delay: 0.72s; }
+    .stagger .reveal:nth-child(8)  { transition-delay: 0.84s; }
+
+    /* ── Hero decorative blob ── */
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-blob-1 {
+      width: 500px; height: 500px;
+      top: -100px; right: -100px;
+      background: radial-gradient(circle, rgba(212,165,116,0.18) 0%, transparent 70%);
+      animation: floatBob 8s ease-in-out infinite;
+    }
+    .hero-blob-2 {
+      width: 300px; height: 300px;
+      bottom: 0; left: -60px;
+      background: radial-gradient(circle, rgba(111,78,55,0.1) 0%, transparent 70%);
+      animation: floatBob 10s ease-in-out infinite reverse;
+    }
+
+    /* ── Hero ornament ring ── */
+    .hero-ornament {
+      position: absolute;
+      bottom: 8%;
+      right: 8%;
+      width: 120px;
+      height: 120px;
+      border: 1px solid rgba(212,165,116,0.3);
+      border-radius: 50%;
+      animation: rotateSlow 20s linear infinite;
+      pointer-events: none;
+    }
+    .hero-ornament::after {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px dashed rgba(212,165,116,0.2);
+      border-radius: 50%;
+    }
+
+    /* ── Hero tagline accent line ── */
+    .hero-accent-line {
+      width: 0;
+      height: 1px;
+      background: var(--accent-gold);
+      margin: 0 auto 2rem;
+      animation: lineDraw 1.2s ease 0.8s forwards;
+    }
+
+    /* ── Section heading underline draw ── */
+    .section-title {
+      position: relative;
+      display: inline-block;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--accent-gold);
+      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+    }
+    .section-title.visible::after {
+      width: 60px;
+    }
+
+    /* ── Menu category hover refined ── */
+    .menu-category {
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.4s ease;
+    }
+
+    /* ── Location item ── */
+    .location-item {
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .location-item:hover {
+      transform: translateY(-6px);
+    }
+
+    /* ── About image float on hover ── */
+    .about-image img {
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .about-image:hover img {
+      transform: scale(1.03);
+    }
+
+    /* ── CTA button pulse after load ── */
+    @keyframes subtlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(44,24,16,0); }
+      50%       { box-shadow: 0 0 0 8px rgba(44,24,16,0.08); }
+    }
+    .cta-button {
+      animation: fadeInUp 1s ease 0.4s forwards,
+                 subtlePulse 3s ease 2s infinite;
+    }
+
+    /* ── Scroll progress bar ── */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-gold), var(--coffee-medium));
+      width: 0%;
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* ── Nav link active state ── */
+    .nav-links a.active {
+      color: var(--coffee-dark);
+    }
+    .nav-links a.active::after {
+      width: 100%;
     }
 
     /* =================== ABOUT SECTION =================== */
@@ -590,6 +785,9 @@
   </style>
 </head>
 <body>
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress"></div>
+
   <!-- Header -->
   <header>
     <nav>
@@ -610,10 +808,14 @@
 
   <!-- Hero Section -->
   <section class="hero" id="home">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-ornament"></div>
     <div class="hero-content">
       <h1>
         <strong>[Your Tagline Goes Here]</strong>
       </h1>
+      <div class="hero-accent-line"></div>
       <p>
         Lorem ipsum sip amet, consectetur café adipiscing. Your story, your flavors, your hours — all in one place. Replace this line with what makes your business special.
       </p>
@@ -624,10 +826,10 @@
   <!-- About Section -->
   <section class="about" id="about">
     <div class="about-container">
-      <div class="about-image">
+      <div class="about-image reveal from-left">
         <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop" alt="Café Interior">
       </div>
-      <div class="about-text">
+      <div class="about-text reveal from-right">
         <h2>[Your Brand Headline]</h2>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Replace this with your café's origin story — where it started, who's behind it, what drives you.
@@ -645,13 +847,13 @@
   <!-- Menu Section -->
   <section class="menu" id="menu">
     <div class="menu-header">
-      <h2>Our Menu</h2>
-      <p>Lorem ipsum offerings amet — freshly prepared drinks, snacks, and meals to satisfy every craving.</p>
+      <h2 class="section-title reveal">Our Menu</h2>
+      <p class="reveal">Lorem ipsum offerings amet — freshly prepared drinks, snacks, and meals to satisfy every craving.</p>
     </div>
 
-    <div class="menu-grid">
+    <div class="menu-grid stagger">
       <!-- Category 1 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Signature Drinks</h3>
         <div class="menu-item">
           <h4>Brew Ipsum Classic <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
@@ -676,7 +878,7 @@
       </div>
 
       <!-- Category 2 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Premium Series</h3>
         <div class="menu-item">
           <h4>Eiusmod Reserve <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
@@ -701,7 +903,7 @@
       </div>
 
       <!-- Category 3 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Coffee Selection</h3>
         <div class="menu-item">
           <h4>Americano Veniam <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
@@ -726,7 +928,7 @@
       </div>
 
       <!-- Category 4 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Fruit Tea &amp; Refreshers</h3>
         <div class="menu-item">
           <h4>Commodo Citrus Splash <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
@@ -751,7 +953,7 @@
       </div>
 
       <!-- Category 5 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Blended Specials</h3>
         <div class="menu-item">
           <h4>Voluptate Salted Caramel <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
@@ -772,7 +974,7 @@
       </div>
 
       <!-- Category 6 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Snacks &amp; Bites</h3>
         <div class="menu-item">
           <h4>Nulla Pariatur Fries <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
@@ -793,7 +995,7 @@
       </div>
 
       <!-- Category 7 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Rice Meals</h3>
         <div class="menu-item">
           <h4>Non Proident Pork Meal <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
@@ -813,7 +1015,7 @@
       </div>
 
       <!-- Category 8 -->
-      <div class="menu-category">
+      <div class="menu-category reveal">
         <h3>Add-Ons &amp; Extras</h3>
         <div class="menu-item">
           <h4>Pearl / Tapioca <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
@@ -843,10 +1045,10 @@
   <!-- Location Section -->
   <section class="location" id="location">
     <div class="location-container">
-      <h2>Visit Us</h2>
+      <h2 class="section-title reveal">Visit Us</h2>
       
-      <div class="location-details">
-        <div class="location-item">
+      <div class="location-details stagger">
+        <div class="location-item reveal scale-up">
           <h3>Location</h3>
           <p>
             [Street / Block / Lot Number]<br>
@@ -858,7 +1060,7 @@
           </p>
         </div>
 
-        <div class="location-item">
+        <div class="location-item reveal scale-up">
           <h3>Hours</h3>
           <p>
             <strong>[OPEN DAYS]</strong><br>
@@ -869,7 +1071,7 @@
           </p>
         </div>
 
-        <div class="location-item">
+        <div class="location-item reveal scale-up">
           <h3>Order Online</h3>
           <p>
             We deliver to [Area Name]<br>
@@ -907,49 +1109,162 @@
   </footer>
 
   <script>
-    // Mobile menu toggle
+    /* ─────────────────────────────────────────
+       MOBILE MENU
+    ───────────────────────────────────────── */
     function toggleMenu() {
       const navLinks = document.getElementById('navLinks');
       navLinks.classList.toggle('active');
     }
 
-    // Close menu when clicking on a link
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', () => {
         document.getElementById('navLinks').classList.remove('active');
       });
     });
 
-    // Smooth scroll with offset for fixed header
+    /* ─────────────────────────────────────────
+       SMOOTH SCROLL WITH HEADER OFFSET
+    ───────────────────────────────────────── */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-          const offset = 80;
-          const targetPosition = target.offsetTop - offset;
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
+          window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
         }
       });
     });
 
-    // Header scroll effect
-    let lastScroll = 0;
-    window.addEventListener('scroll', () => {
-      const header = document.querySelector('header');
-      const currentScroll = window.pageYOffset;
+    /* ─────────────────────────────────────────
+       SCROLL PROGRESS BAR
+    ───────────────────────────────────────── */
+    const progressBar = document.getElementById('scroll-progress');
 
-      if (currentScroll > 100) {
-        header.style.boxShadow = '0 2px 20px rgba(44, 24, 16, 0.1)';
-      } else {
-        header.style.boxShadow = 'none';
+    /* ─────────────────────────────────────────
+       HEADER SHADOW + ACTIVE NAV + PARALLAX
+    ───────────────────────────────────────── */
+    const header = document.querySelector('header');
+    const heroSection = document.querySelector('.hero');
+    const heroBlob1  = document.querySelector('.hero-blob-1');
+    const heroBlob2  = document.querySelector('.hero-blob-2');
+    const sections   = document.querySelectorAll('section[id]');
+    const navLinks   = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.pageYOffset;
+      const docH    = document.documentElement.scrollHeight - window.innerHeight;
+
+      // Progress bar
+      progressBar.style.width = (scrollY / docH * 100) + '%';
+
+      // Header shadow
+      header.style.boxShadow = scrollY > 100
+        ? '0 2px 20px rgba(44,24,16,0.12)'
+        : 'none';
+
+      // Parallax on hero blobs
+      if (heroSection) {
+        const heroH = heroSection.offsetHeight;
+        if (scrollY < heroH) {
+          const pct = scrollY / heroH;
+          heroBlob1 && (heroBlob1.style.transform = `translateY(${scrollY * 0.25}px)`);
+          heroBlob2 && (heroBlob2.style.transform = `translateY(${scrollY * -0.15}px)`);
+        }
       }
 
-      lastScroll = currentScroll;
+      // Active nav link
+      let current = '';
+      sections.forEach(sec => {
+        if (scrollY >= sec.offsetTop - 120) current = sec.getAttribute('id');
+      });
+      navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      });
+    }, { passive: true });
+
+    /* ─────────────────────────────────────────
+       INTERSECTION OBSERVER — SCROLL REVEALS
+    ───────────────────────────────────────── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          // Fire section-title underline draw
+          if (entry.target.classList.contains('section-title')) {
+            entry.target.classList.add('visible');
+          }
+
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
     });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ─────────────────────────────────────────
+       MENU CATEGORY ENTRANCE — STAGGER WITHIN
+       VIEWPORT (refined timing per row)
+    ───────────────────────────────────────── */
+    const menuObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const grid    = entry.target.closest('.menu-grid');
+          const items   = Array.from(grid.querySelectorAll('.menu-category'));
+          const idx     = items.indexOf(entry.target);
+          const rowDelay = (idx % 2) * 0.14;   // stagger per column
+          const rowIndex = Math.floor(idx / 2);
+          const baseDelay = rowIndex * 0.08;
+
+          entry.target.style.transitionDelay = (baseDelay + rowDelay) + 's';
+          entry.target.classList.add('visible');
+          menuObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.menu-category.reveal').forEach(el => menuObserver.observe(el));
+
+    /* ─────────────────────────────────────────
+       MENU ITEM HOVER — micro lift on items
+    ───────────────────────────────────────── */
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.style.transform = 'translateX(6px)';
+        item.style.transition = 'transform 0.3s cubic-bezier(0.22,1,0.36,1)';
+      });
+      item.addEventListener('mouseleave', () => {
+        item.style.transform = 'translateX(0)';
+      });
+    });
+
+    /* ─────────────────────────────────────────
+       HERO ENTRANCE — stagger h1 words
+    ───────────────────────────────────────── */
+    (function animateHero() {
+      const h1    = document.querySelector('.hero h1');
+      const heroP = document.querySelector('.hero p');
+      const cta   = document.querySelector('.cta-button');
+
+      if (h1) {
+        h1.style.animationName    = 'fadeInUp';
+        h1.style.animationDuration = '1s';
+        h1.style.animationFillMode = 'forwards';
+        h1.style.animationDelay   = '0.1s';
+      }
+      if (heroP) {
+        heroP.style.animationDelay = '0.35s';
+      }
+      if (cta) {
+        // override the double-animation conflict; pulse starts after load
+        cta.style.animation = 'fadeInUp 1s ease 0.55s forwards, subtlePulse 3s ease 2.5s infinite';
+      }
+    })();
   </script>
 </body>
 </html>
