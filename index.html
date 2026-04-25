@@ -982,390 +982,99 @@
       .reveal { opacity: 1 !important; transform: none !important; }
     }
 
+
+
+
     /* ╔══════════════════════════════════════════╗
-       ║     COFFEE POUR INTRO — Full Page        ║
+       ║  MILK POUR INTRO                         ║
        ╚══════════════════════════════════════════╝ */
 
-    /* Lock scroll during intro */
     body.intro-active { overflow: hidden; }
 
-    /* ── Outer overlay (full viewport) ── */
-    #cp-overlay {
+    #milk-intro {
       position: fixed;
       inset: 0;
       z-index: 99999;
       pointer-events: all;
-      overflow: hidden;
-      background: #1a0a04;
+      background: #0d0502;
     }
 
-    /* ── The coffee liquid that rises from bottom ── */
-    #cp-liquid {
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 100%; height: 0;
-      will-change: height;
-      overflow: hidden;
-    }
-
-    /* Layered coffee gradient */
-    #cp-liquid-inner {
+    /* Canvas covers everything */
+    #milk-canvas {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to top,
-        #1a0a04   0%,
-        #2c1208  12%,
-        #4a1e0a  28%,
-        #6f3515  45%,
-        #8b4a1a  60%,
-        #a05c22  72%,
-        #b8722e  82%,
-        #c8853a  90%,
-        #d4a574  97%,
-        #e8c99a 100%
-      );
-    }
-
-    /* Wavy foam edge at the top of the liquid */
-    #cp-foam-edge {
-      position: absolute;
-      top: -28px; left: -5%;
-      width: 110%; height: 56px;
-      background: transparent;
-      pointer-events: none;
-    }
-
-    #cp-foam-svg {
-      width: 100%; height: 100%;
+      width: 100% !important;
+      height: 100% !important;
       display: block;
     }
 
-    /* Foam bubbles floating on surface */
-    .cp-bubble {
+    /* Pour stream ribbon */
+    #milk-stream {
       position: absolute;
-      border-radius: 50%;
-      background: rgba(232, 201, 154, 0.55);
-      border: 1px solid rgba(245, 241, 237, 0.3);
-      animation: cpBubbleFloat 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes cpBubbleFloat {
-      0%, 100% { transform: translateY(0) scale(1);   opacity: 0.5; }
-      50%       { transform: translateY(-8px) scale(1.1); opacity: 0.8; }
-    }
-
-    /* ── Pour stream (coming down from top-center) ── */
-    #cp-stream-wrap {
-      position: absolute;
-      top: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    .cp-stream-seg {
-      width: 100%;
-      background: linear-gradient(to bottom, #d4a574, #a05c22, #6f3515);
-      border-radius: 0 0 12px 12px;
-      transform-origin: top center;
-    }
-
-    /* Pour drip at bottom of stream */
-    #cp-drip {
-      width: 18px; height: 18px;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      background: radial-gradient(circle at 40% 35%, #e8c99a, #a05c22);
-      position: absolute;
-      bottom: -10px;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
-      animation: dripPulse 0.4s ease-in-out infinite alternate;
-    }
-
-    @keyframes dripPulse {
-      from { transform: translateX(-50%) scaleY(1);   }
-      to   { transform: translateX(-50%) scaleY(1.25); }
-    }
-
-    /* ── Center stage: Cup SVG ── */
-    #cp-cup-stage {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-      z-index: 3;
-    }
-
-    #cp-cup-svg {
-      width: clamp(130px, 22vw, 200px);
-      height: auto;
-      filter: drop-shadow(0 12px 40px rgba(0,0,0,0.7));
-      opacity: 0;
-      transform: translateY(30px) scale(0.88);
-      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1);
-    }
-
-    #cp-cup-svg.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* ── Steam wisps ── */
-    .cp-steam {
-      position: absolute;
-      bottom: 100%;
-      width: 4px;
-      border-radius: 3px;
-      background: linear-gradient(to top, rgba(245,241,237,0.6), transparent);
-      transform-origin: bottom center;
-      opacity: 0;
-      animation: cpSteam 2.2s ease-in-out infinite;
-    }
-
-    .cp-steam:nth-child(1) { left: 33%; height: 32px; animation-delay: 0s;    animation-duration: 2.4s; }
-    .cp-steam:nth-child(2) { left: 47%; height: 48px; animation-delay: 0.45s; animation-duration: 2.0s; }
-    .cp-steam:nth-child(3) { left: 60%; height: 28px; animation-delay: 0.9s;  animation-duration: 2.6s; }
-    .cp-steam:nth-child(4) { left: 40%; height: 40px; animation-delay: 1.3s;  animation-duration: 2.2s; }
-    .cp-steam:nth-child(5) { left: 55%; height: 34px; animation-delay: 1.8s;  animation-duration: 1.9s; }
-
-    @keyframes cpSteam {
-      0%   { opacity: 0;   transform: translateY(0)     scaleX(1)   rotate(0deg); }
-      20%  { opacity: 0.7; }
-      70%  { opacity: 0.3; transform: translateY(-55px) scaleX(1.8) rotate(10deg); }
-      100% { opacity: 0;   transform: translateY(-100px) scaleX(0.4) rotate(-6deg); }
-    }
-
-    /* ── Tagline text ── */
-    #cp-tagline {
-      position: absolute;
-      bottom: 14%;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      white-space: nowrap;
+      width: 12px;
+      height: 0;
       z-index: 4;
-      opacity: 0;
-      transition: opacity 0.9s ease;
-    }
-
-    #cp-tagline.show { opacity: 1; }
-
-    #cp-tagline h2 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(1.5rem, 5vw, 2.6rem);
-      font-weight: 300;
-      color: #f5f1ed;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
-    }
-
-    #cp-tagline p {
-      font-family: 'Jost', sans-serif;
-      font-size: 0.8rem;
-      color: rgba(212,165,116,0.9);
-      letter-spacing: 4px;
-      text-transform: uppercase;
-    }
-
-    /* ── Progress bar at very bottom ── */
-    #cp-progress-bar {
-      position: absolute;
-      bottom: 0; left: 0;
-      height: 3px;
-      background: linear-gradient(to right, #d4a574, #e8c99a);
-      width: 0%;
-      z-index: 5;
-      transition: none;
-    }
-
-    /* ── Floating beans ── */
-    .cp-bean {
-      position: absolute;
-      width: 16px; height: 10px;
-      border-radius: 50%;
-      background: #3a1508;
-      border: 1px solid #6f3515;
-      opacity: 0;
-      animation: cpBeanFloat 5s ease-in-out infinite;
       pointer-events: none;
+      border-radius: 0 0 6px 6px;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0)    0%,
+        rgba(255,252,248,0.95) 5%,
+        rgba(245,235,218,0.98) 50%,
+        rgba(225,205,175,0.85) 100%
+      );
+      animation: mStreamWobble 0.32s ease-in-out infinite alternate;
     }
 
-    .cp-bean::after {
-      content: '';
+    @keyframes mStreamWobble {
+      from { transform: translateX(calc(-50% - 1.5px)) scaleX(1);    }
+      to   { transform: translateX(calc(-50% + 1.5px)) scaleX(1.18); }
+    }
+
+    /* Drip teardrop */
+    #milk-drip {
       position: absolute;
-      top: 50%; left: 50%;
-      width: 1px; height: 65%;
-      background: #2c1208;
-      transform: translate(-50%,-50%) rotate(15deg);
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px; height: 22px;
+      border-radius: 50% 50% 58% 58% / 38% 38% 62% 62%;
+      background: radial-gradient(ellipse at 38% 30%, #ffffff, #e0c8a0);
+      animation: mDripPulse 0.42s ease-in-out infinite alternate;
     }
 
-    @keyframes cpBeanFloat {
-      0%   { opacity: 0;   transform: translateY(0)      rotate(0deg);   }
-      15%  { opacity: 0.4; }
-      85%  { opacity: 0.2; }
-      100% { opacity: 0;   transform: translateY(-130px) rotate(200deg); }
+    @keyframes mDripPulse {
+      from { transform: translateX(-50%) scaleY(1)    scaleX(1);    }
+      to   { transform: translateX(-50%) scaleY(1.28) scaleX(0.88); }
     }
 
-    /* ── Grain texture overlay ── */
-    #cp-overlay::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.07'/%3E%3C/svg%3E");
-      opacity: 0.22;
-      pointer-events: none;
-      mix-blend-mode: overlay;
-      z-index: 1;
+    /* Fade-dissolve exit */
+    #milk-intro {
+      transition: opacity 0s;
     }
-
-    /* ── Exit: overlay slides up ── */
-    #cp-overlay {
-      transition: transform 1.3s cubic-bezier(0.76, 0, 0.24, 1),
-                  opacity 0.5s ease 1.1s;
-    }
-
-    #cp-overlay.lift {
-      transform: translateY(-100%);
+    #milk-intro.dissolve {
+      transition: opacity 1.2s ease-in-out;
       opacity: 0;
       pointer-events: none;
     }
+
 
   </style>
 
 </head>
 <body class="intro-active">
 
-  <!-- ╔══════════════════════════════════════════╗
-       ║       COFFEE POUR INTRO OVERLAY          ║
-       ╚══════════════════════════════════════════╝ -->
-  <div id="cp-overlay">
+  <!-- ══ MILK POUR INTRO ══ -->
+  <div id="milk-intro">
+    <canvas id="milk-canvas"></canvas>
+    <div id="milk-stream"><div id="milk-drip"></div></div>
+  </div>
 
-    <!-- Rising coffee liquid -->
-    <div id="cp-liquid">
-      <div id="cp-liquid-inner"></div>
 
-      <!-- Animated foam edge SVG -->
-      <div id="cp-foam-edge">
-        <svg id="cp-foam-svg" viewBox="0 0 1440 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path id="cp-foam-path"
-            d="M0,28 C120,8 240,48 360,28 C480,8 600,48 720,28 C840,8 960,48 1080,28 C1200,8 1320,48 1440,28 L1440,56 L0,56 Z"
-            fill="#c8853a" opacity="0.85"/>
-          <path
-            d="M0,36 C100,20 220,52 360,34 C500,16 620,50 760,32 C900,14 1020,52 1160,34 C1280,18 1380,46 1440,32 L1440,56 L0,56 Z"
-            fill="#d4a574" opacity="0.5"/>
-        </svg>
-      </div>
 
-      <!-- Foam bubbles -->
-      <div class="cp-bubble" style="width:12px;height:12px;left:18%;top:-6px;animation-delay:0s;"></div>
-      <div class="cp-bubble" style="width:8px; height:8px; left:32%;top:-4px;animation-delay:0.4s;"></div>
-      <div class="cp-bubble" style="width:16px;height:16px;left:50%;top:-8px;animation-delay:0.8s;"></div>
-      <div class="cp-bubble" style="width:10px;height:10px;left:68%;top:-5px;animation-delay:0.2s;"></div>
-      <div class="cp-bubble" style="width:14px;height:14px;left:82%;top:-7px;animation-delay:1.0s;"></div>
-      <div class="cp-bubble" style="width:7px; height:7px; left:90%;top:-3px;animation-delay:0.6s;"></div>
-    </div>
-
-    <!-- Floating coffee beans (background ambiance) -->
-    <div class="cp-bean" style="left:8%;  bottom:15%; animation-delay:0.2s; animation-duration:5.5s;"></div>
-    <div class="cp-bean" style="left:18%; bottom:22%; animation-delay:1.2s; animation-duration:4.8s;"></div>
-    <div class="cp-bean" style="left:78%; bottom:18%; animation-delay:0.6s; animation-duration:6.2s;"></div>
-    <div class="cp-bean" style="left:88%; bottom:28%; animation-delay:1.8s; animation-duration:5.0s;"></div>
-    <div class="cp-bean" style="left:55%; bottom:10%; animation-delay:2.4s; animation-duration:4.5s;"></div>
-
-    <!-- Pour stream from top -->
-    <div id="cp-stream-wrap">
-      <div class="cp-stream-seg" id="cp-stream-seg" style="height:0px; transition:none;"></div>
-      <div id="cp-drip"></div>
-    </div>
-
-    <!-- Cup on center stage -->
-    <div id="cp-cup-stage">
-      <!-- Steam wisps -->
-      <div style="position:relative; width:clamp(130px,22vw,200px);">
-        <div class="cp-steam"></div>
-        <div class="cp-steam"></div>
-        <div class="cp-steam"></div>
-        <div class="cp-steam"></div>
-        <div class="cp-steam"></div>
-
-        <!-- Cup SVG -->
-        <svg id="cp-cup-svg" viewBox="0 0 200 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Saucer shadow -->
-          <ellipse cx="100" cy="198" rx="72" ry="10" fill="#0d0503" opacity="0.7"/>
-          <!-- Saucer -->
-          <ellipse cx="100" cy="193" rx="68" ry="9" fill="#3a1508"/>
-          <rect x="32" y="188" width="136" height="8" rx="4" fill="#4a2010"/>
-
-          <!-- Cup body -->
-          <path d="M42 92 L52 178 Q100 190 148 178 L158 92 Z" fill="url(#cpCupGrad)"/>
-
-          <!-- Rim outer -->
-          <ellipse cx="100" cy="92" rx="58" ry="12" fill="#7a3d14"/>
-          <!-- Rim inner -->
-          <ellipse cx="100" cy="90" rx="55" ry="10" fill="#8b4a1a"/>
-
-          <!-- Coffee surface -->
-          <ellipse cx="100" cy="90" rx="53" ry="9" fill="url(#cpCoffeeTop)"/>
-
-          <!-- Latte art heart -->
-          <path d="M86,88 C86,84 92,82 96,86 C100,82 106,84 106,88 C106,92 100,96 96,100 C92,96 86,92 86,88 Z"
-                fill="rgba(245,241,237,0.15)"/>
-          <path d="M90,87 Q96,85 102,87" stroke="rgba(245,241,237,0.2)" stroke-width="1.5" fill="none"/>
-
-          <!-- Ripple on surface -->
-          <ellipse cx="100" cy="90" rx="30" ry="5" fill="none"
-            stroke="rgba(245,241,237,0.1)" stroke-width="1">
-            <animate attributeName="rx" values="10;55;10" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
-          </ellipse>
-
-          <!-- Cup handle -->
-          <path d="M158 108 Q184 108 184 132 Q184 158 158 158"
-                stroke="#4a2010" stroke-width="13" stroke-linecap="round" fill="none"/>
-          <path d="M158 108 Q180 108 180 132 Q180 154 158 158"
-                stroke="#7a3d14" stroke-width="8" stroke-linecap="round" fill="none"/>
-
-          <!-- Shine highlight -->
-          <path d="M56 110 Q60 118 57 144 Q55 156 57 168"
-                stroke="rgba(255,255,255,0.1)" stroke-width="5" stroke-linecap="round"/>
-
-          <defs>
-            <linearGradient id="cpCupGrad" x1="42" y1="92" x2="158" y2="180" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#9b5220"/>
-              <stop offset="50%"  stop-color="#6f3515"/>
-              <stop offset="100%" stop-color="#2c1208"/>
-            </linearGradient>
-            <radialGradient id="cpCoffeeTop" cx="45%" cy="40%" r="55%">
-              <stop offset="0%"   stop-color="#c8853a"/>
-              <stop offset="50%"  stop-color="#8b4a1a"/>
-              <stop offset="100%" stop-color="#3a1508"/>
-            </radialGradient>
-          </defs>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Tagline -->
-    <div id="cp-tagline">
-      <h2>[Your Café Name Here]</h2>
-      <p>Crafted with love &nbsp;·&nbsp; Served with care</p>
-    </div>
-
-    <!-- Progress bar -->
-    <div id="cp-progress-bar"></div>
-
-  </div><!-- /#cp-overlay -->
 
   <!-- Scroll progress bar -->
   <div id="scroll-progress"></div>
@@ -1753,142 +1462,170 @@
     })();
 
 
-    /* ╔══════════════════════════════════════════════════════╗
-       ║   COFFEE POUR INTRO — Cinematic Orchestration        ║
-       ╚══════════════════════════════════════════════════════╝
-
-       Timeline:
-         0ms   — page loads, overlay shows dark background
-         200ms — cup fades in with spring bounce
-         600ms — pour stream begins growing from top
-         900ms — liquid fill starts rising from bottom
-         900ms — progress bar mirrors fill %
-         ~3500ms — liquid reaches 100% of viewport
-         3600ms — tagline fades in
-         4400ms — overlay lifts like a curtain
-         5700ms — overlay removed, scroll unlocked
+    /* ══ MILK POUR INTRO ══
+       Dark espresso screen. Milk pours from top-center.
+       Canvas paints expanding cream/white blobs from impact point.
+       As coverage fills, the dark overlay dissolves away.
     */
-    (function coffeePourIntro() {
+    window.addEventListener('DOMContentLoaded', function() {
 
-      const overlay   = document.getElementById('cp-overlay');
-      const liquid    = document.getElementById('cp-liquid');
-      const streamWrap = document.getElementById('cp-stream-wrap');
-      const streamSeg  = document.getElementById('cp-stream-seg');
-      const tagline   = document.getElementById('cp-tagline');
-      const cupSvg    = document.getElementById('cp-cup-svg');
-      const progressBar = document.getElementById('cp-progress-bar');
-      const foamPath  = document.getElementById('cp-foam-path');
+      var intro  = document.getElementById('milk-intro');
+      var canvas = document.getElementById('milk-canvas');
+      var stream = document.getElementById('milk-stream');
+      if (!intro || !canvas) return;
 
-      if (!overlay) return;
+      var ctx = canvas.getContext('2d');
 
-      const FILL_DURATION = 2800; // ms for liquid to fill viewport
-      let fillStart = null;
-      let animating = true;
-
-      /* ── Easing ── */
-      function easeInOutQuart(t) {
-        return t < 0.5 ? 8*t*t*t*t : 1 - Math.pow(-2*t+2, 4)/2;
+      /* ── Size canvas to full viewport ── */
+      var W = 0, H = 0, CX = 0;
+      function sizeCanvas() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        CX = W / 2;
       }
+      sizeCanvas();
+      window.addEventListener('resize', sizeCanvas);
 
-      function easeInCubic(t) {
-        return t * t * t;
+      /* ── Paint the initial dark espresso background ── */
+      function paintBg() {
+        ctx.fillStyle = '#0d0502';
+        ctx.fillRect(0, 0, W, H);
       }
+      paintBg();
 
-      /* ── Step 1: Cup entrance (200ms) ── */
-      setTimeout(() => {
-        cupSvg && cupSvg.classList.add('show');
-      }, 200);
+      /* ── Timing ── */
+      var START      = null;
+      var STREAM_MS  = 2000;   /* stream grows for 2s */
+      var POUR_MS    = 4200;   /* total pour lasts 4.2s */
+      var streamTipY = 0;
 
-      /* ── Step 2: Pour stream grows downward (600ms) ── */
-      setTimeout(() => {
-        if (!streamWrap) return;
-        streamWrap.style.opacity = '1';
-        streamWrap.style.transition = 'opacity 0.3s ease';
+      /* ── Blob pool ── */
+      var blobs = [];
 
-        // Grow the stream segment height toward the cup
-        const cupStage = document.getElementById('cp-cup-stage');
-        const targetH  = cupStage
-          ? Math.max(cupStage.getBoundingClientRect().top - 40, 80)
-          : window.innerHeight * 0.35;
-
-        streamSeg.style.transition = `height ${FILL_DURATION * 0.5}ms cubic-bezier(0.4,0,0.2,1)`;
-        streamSeg.style.height = targetH + 'px';
-      }, 600);
-
-      /* ── Step 3: Liquid fill rises (900ms) ── */
-      setTimeout(() => {
-        requestAnimationFrame(function frame(ts) {
-          if (!animating) return;
-          if (!fillStart) fillStart = ts;
-
-          const elapsed  = ts - fillStart;
-          const progress = Math.min(elapsed / FILL_DURATION, 1);
-          const eased    = easeInOutQuart(progress);
-          const pct      = eased * 100;
-
-          // Raise the liquid
-          liquid.style.height = pct + '%';
-
-          // Progress bar
-          if (progressBar) progressBar.style.width = pct + '%';
-
-          // Animate foam wave horizontally
-          if (foamPath && progress > 0.1) {
-            const wave = Math.sin(elapsed * 0.003) * 18;
-            const wave2 = Math.cos(elapsed * 0.0025) * 12;
-            foamPath.setAttribute('d',
-              `M0,${28+wave} C120,${8-wave2} 240,${48+wave} 360,${28-wave2} ` +
-              `C480,${8+wave} 600,${48-wave2} 720,${28+wave} ` +
-              `C840,${8-wave2} 960,${48+wave} 1080,${28-wave2} ` +
-              `C1200,${8+wave} 1320,${48-wave2} 1440,${28+wave} L1440,56 L0,56 Z`
-            );
-          }
-
-          // Dim the pour stream as liquid rises toward cup
-          if (streamWrap && pct > 40) {
-            const streamOpacity = Math.max(0, 1 - (pct - 40) / 40);
-            streamWrap.style.opacity = streamOpacity.toString();
-          }
-
-          if (progress < 1) {
-            requestAnimationFrame(frame);
-          } else {
-            // Fill complete
-            liquid.style.height = '100%';
-            if (progressBar) progressBar.style.width = '100%';
-            if (streamWrap)  streamWrap.style.opacity = '0';
-
-            // Show tagline
-            setTimeout(() => {
-              tagline && tagline.classList.add('show');
-            }, 180);
-
-            // Lift overlay
-            setTimeout(liftOverlay, 900);
-          }
-        });
-      }, 900);
-
-      /* ── Lift the overlay like a curtain pulling up ── */
-      function liftOverlay() {
-        overlay.classList.add('lift');
-
-        // Unlock scroll
-        setTimeout(() => {
-          document.body.classList.remove('intro-active');
-        }, 400);
-
-        // Remove from DOM + fire reveals
-        setTimeout(() => {
-          overlay.remove();
-          document.querySelectorAll('.reveal').forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight + 120) el.classList.add('visible');
+      function spawnBlobs(x, y, count) {
+        for (var i = 0; i < count; i++) {
+          var angle = Math.random() * Math.PI * 2;
+          var spd   = 0.4 + Math.random() * 2.0;
+          blobs.push({
+            x:      x + (Math.random() - 0.5) * 30,
+            y:      y + (Math.random() - 0.5) * 15,
+            vx:     Math.cos(angle) * spd,
+            vy:     Math.sin(angle) * spd * 0.5,
+            r:      12 + Math.random() * 30,
+            maxR:   60 + Math.random() * 160,
+            alpha:  0.45 + Math.random() * 0.45,
+            warm:   Math.random() > 0.55,
+            age:    0,
+            maxAge: 80 + Math.floor(Math.random() * 70)
           });
-        }, 1400);
+        }
       }
 
-    })();
+      /* ── Ease functions ── */
+      function easeOut3(t) { return 1 - Math.pow(1 - t, 3); }
+      function easeInOut2(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+      /* ── Draw loop ── */
+      function draw(ts) {
+        if (!START) START = ts;
+        var elapsed = ts - START;
+        var pourP   = Math.min(elapsed / POUR_MS, 1);
+
+        /* Dark semi-transparent fill each frame = trails & fading old blobs */
+        ctx.fillStyle = 'rgba(13,5,2,0.15)';
+        ctx.fillRect(0, 0, W, H);
+
+        /* Grow stream downward */
+        var sP     = Math.min(elapsed / STREAM_MS, 1);
+        streamTipY = easeOut3(sP) * H * 0.6;
+        stream.style.height = streamTipY + 'px';
+
+        /* Spawn blobs at impact point — more as pour progresses */
+        if (elapsed > 80) {
+          var rate = 2 + Math.floor(pourP * 6);
+          spawnBlobs(CX, streamTipY, rate);
+        }
+
+        /* Rising tendrils (milk swirling upward through the coffee) */
+        if (elapsed > 300 && Math.random() < 0.35) {
+          blobs.push({
+            x: CX + (Math.random() - 0.5) * 100,
+            y: streamTipY + (Math.random() - 0.5) * 40,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: -0.5 - Math.random() * 1.4,
+            r: 6, maxR: 45 + Math.random() * 55,
+            alpha: 0.25 + Math.random() * 0.25,
+            warm: true,
+            age: 0, maxAge: 60 + Math.floor(Math.random() * 40)
+          });
+        }
+
+        /* Draw blobs */
+        ctx.globalCompositeOperation = 'lighter';
+        for (var i = blobs.length - 1; i >= 0; i--) {
+          var b = blobs[i];
+          b.x  += b.vx;  b.vx *= 0.96;
+          b.y  += b.vy;  b.vy *= 0.96;
+          b.r   = Math.min(b.r + 1.2 + pourP * 1.0, b.maxR);
+          b.age++;
+          if (b.age >= b.maxAge) { blobs.splice(i,1); continue; }
+
+          var lp      = b.age / b.maxAge;
+          var fadeIn  = lp < 0.2 ? lp / 0.2 : 1;
+          var fadeOut = lp > 0.55 ? 1 - (lp - 0.55) / 0.45 : 1;
+          var a       = b.alpha * fadeIn * fadeOut;
+
+          var g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+          if (b.warm) {
+            g.addColorStop(0,    'rgba(235,210,165,' + a + ')');
+            g.addColorStop(0.4,  'rgba(200,160, 95,' + (a*0.65) + ')');
+            g.addColorStop(0.75, 'rgba(150,100, 40,' + (a*0.3) + ')');
+            g.addColorStop(1,    'rgba( 80, 40,  8,0)');
+          } else {
+            g.addColorStop(0,    'rgba(255,252,245,' + a + ')');
+            g.addColorStop(0.3,  'rgba(245,230,205,' + (a*0.8) + ')');
+            g.addColorStop(0.65, 'rgba(210,180,130,' + (a*0.4) + ')');
+            g.addColorStop(1,    'rgba(150,100, 50,0)');
+          }
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fillStyle = g;
+          ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+
+        /* Fade stream into the liquid as surface fills */
+        if (streamTipY > 0) {
+          var sAlpha = Math.max(0, 1 - pourP * 1.8);
+          stream.style.opacity = sAlpha;
+        }
+
+        if (elapsed < POUR_MS) {
+          requestAnimationFrame(draw);
+        } else {
+          /* Done — dissolve overlay to reveal website */
+          stream.style.transition = 'opacity 0.4s ease';
+          stream.style.opacity    = '0';
+          intro.classList.add('dissolve');
+          setTimeout(function() {
+            intro.remove();
+            document.body.classList.remove('intro-active');
+            document.querySelectorAll('.reveal').forEach(function(el) {
+              if (el.getBoundingClientRect().top < window.innerHeight + 120)
+                el.classList.add('visible');
+            });
+          }, 1250);
+        }
+      }
+
+      /* Tiny delay so layout is complete before we read innerWidth/Height */
+      setTimeout(function() {
+        sizeCanvas();
+        paintBg();
+        requestAnimationFrame(draw);
+      }, 60);
+
+    }); /* end DOMContentLoaded */
 
   </script>
 </body>
