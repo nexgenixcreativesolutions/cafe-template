@@ -6,8 +6,9 @@
   <title>Menu - NexGenix Café Template</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+
   <style>
     :root {
       --coffee-dark: #2c1810;
@@ -19,30 +20,21 @@
       --white: #ffffff;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Jost', sans-serif;
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       background-color: var(--cream);
       color: var(--coffee-dark);
       line-height: 1.7;
       overflow-x: hidden;
-      padding-bottom: 100px;
     }
 
     /* =================== HEADER =================== */
     header {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       background: rgba(245, 241, 237, 0.95);
       backdrop-filter: blur(10px);
@@ -61,7 +53,7 @@
     }
 
     .logo {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 1.8rem;
       font-weight: 600;
       color: var(--coffee-dark);
@@ -81,11 +73,20 @@
       font-size: 0.95rem;
       font-weight: 400;
       transition: color 0.3s ease;
+      position: relative;
     }
 
-    .nav-links a:hover {
-      color: var(--coffee-dark);
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px; left: 0;
+      width: 0; height: 1px;
+      background: var(--coffee-medium);
+      transition: width 0.3s ease;
     }
+
+    .nav-links a:hover { color: var(--coffee-dark); }
+    .nav-links a:hover::after { width: 100%; }
 
     .cart-icon-wrapper {
       position: relative;
@@ -98,14 +99,11 @@
       transition: color 0.3s ease;
     }
 
-    .cart-icon:hover {
-      color: var(--coffee-medium);
-    }
+    .cart-icon:hover { color: var(--coffee-medium); }
 
     .cart-count {
       position: absolute;
-      top: -8px;
-      right: -8px;
+      top: -8px; right: -8px;
       background: var(--coffee-dark);
       color: var(--white);
       font-size: 0.7rem;
@@ -116,163 +114,248 @@
       text-align: center;
     }
 
-    /* =================== MENU SECTION =================== */
-    .menu-section {
-      padding: 8rem 3rem 4rem;
+    /* ── Scroll-reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .stagger .reveal:nth-child(1) { transition-delay: 0s; }
+    .stagger .reveal:nth-child(2) { transition-delay: 0.12s; }
+    .stagger .reveal:nth-child(3) { transition-delay: 0.24s; }
+
+    /* ── Section title underline ── */
+    .section-title {
+      position: relative;
+      display: inline-block;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -12px; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 2px;
+      background: var(--accent-gold);
+      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+    }
+    .section-title.visible::after { width: 60px; }
+
+    /* =================== MENU PAGE HEADER =================== */
+    .menu-page-hero {
+      padding: 9rem 3rem 4rem;
+      background: linear-gradient(135deg, var(--cream) 0%, #ebe7e3 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-page-hero::before {
+      content: '';
+      position: absolute;
+      top: -40%; right: -15%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(212,165,116,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .menu-page-hero h1 {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 4.5rem;
+      font-weight: 300;
+      color: var(--coffee-dark);
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.9s ease 0.1s both;
+    }
+
+    .menu-page-hero p {
+      font-size: 1.1rem;
+      color: var(--coffee-medium);
+      max-width: 560px;
+      margin: 0 auto;
+      animation: fadeInUp 0.9s ease 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =================== FEATURED SECTION =================== */
+    .featured-section {
+      padding: 6rem 3rem 5rem;
       max-width: 1400px;
       margin: 0 auto;
     }
 
-    .menu-header {
+    .featured-section-label {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--coffee-dark);
       text-align: center;
       margin-bottom: 3rem;
-    }
-
-    .menu-header h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 4rem;
-      font-weight: 300;
-      color: var(--coffee-dark);
-      margin-bottom: 1rem;
-    }
-
-    .menu-header p {
-      font-size: 1.1rem;
-      color: var(--coffee-medium);
-    }
-
-    /* Category Tabs */
-    .category-tabs {
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
+      align-items: center;
       justify-content: center;
-      margin-bottom: 3rem;
-      padding: 0 1rem;
+      gap: 1.2rem;
     }
 
-    .category-tab {
-      padding: 0.75rem 1.5rem;
-      background: var(--white);
-      border: 2px solid transparent;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      color: var(--coffee-medium);
+    .featured-section-label::before,
+    .featured-section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 130px;
+      height: 1px;
+      background: var(--accent-gold);
     }
 
-    .category-tab:hover {
-      border-color: var(--coffee-light);
-    }
-
-    .category-tab.active {
-      background: var(--coffee-dark);
-      color: var(--white);
-      border-color: var(--coffee-dark);
-    }
-
-    /* Menu Grid */
-    .menu-grid {
+    /* ── 3-column card grid ── */
+    .featured-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      margin-bottom: 5rem;
     }
 
-    .menu-item {
+    .featured-card {
       background: var(--white);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(44, 24, 16, 0.1);
-    }
-
-    .menu-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(44, 24, 16, 0.1);
-    }
-
-    .item-header {
-      margin-bottom: 1rem;
-    }
-
-    .item-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--coffee-dark);
-      margin-bottom: 0.5rem;
-    }
-
-    .item-description {
-      font-size: 0.9rem;
-      color: var(--coffee-medium);
-      font-style: italic;
-      margin-bottom: 1rem;
-    }
-
-    .item-sizes {
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(44, 24, 16, 0.07);
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.4s ease;
     }
 
-    .size-option {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem;
-      background: var(--cream);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
+    .featured-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 18px 50px rgba(44, 24, 16, 0.12);
     }
 
-    .size-option:hover {
-      border-color: var(--coffee-light);
+    .featured-card-img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      display: block;
     }
 
-    .size-option.selected {
-      background: var(--coffee-dark);
-      color: var(--white);
-      border-color: var(--coffee-dark);
+    .featured-card-body {
+      padding: 1.75rem 1.75rem 1rem;
+      flex: 1;
     }
 
-    .size-label {
-      font-weight: 500;
+    .featured-card-body h3 {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--coffee-dark);
+      margin-bottom: 0.35rem;
     }
 
-    .size-price {
+    .item-desc {
+      font-size: 0.88rem;
+      color: var(--coffee-medium);
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .item-price {
+      font-size: 1rem;
       font-weight: 600;
       color: var(--accent-gold);
+      margin-bottom: 0;
     }
 
-    .size-option.selected .size-price {
-      color: var(--white);
+    /* ── Customer compliment bubble ── */
+    .compliment-bubble {
+      background: var(--coffee-dark);
+      color: var(--cream);
+      font-size: 0.83rem;
+      line-height: 1.55;
+      padding: 1rem 1.4rem 1rem 1rem;
+      margin: 0.75rem 1.5rem 1.5rem;
+      border-radius: 14px 14px 14px 2px;
+      position: relative;
     }
 
-    .quantity-control {
+    .compliment-bubble::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 2.8rem;
+      color: var(--accent-gold);
+      line-height: 0;
+      vertical-align: -0.65rem;
+      margin-right: 4px;
+    }
+
+    .compliment-bubble .customer-name {
+      display: block;
+      margin-top: 0.55rem;
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Add to cart controls ── */
+    .card-actions {
+      padding: 0 1.5rem 1.75rem;
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 1rem;
+    }
+
+    .size-select {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      border: 1.5px solid rgba(44, 24, 16, 0.2);
+      border-radius: 6px;
+      background: var(--cream);
+      color: var(--coffee-dark);
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236f4e37' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2.2rem;
+    }
+
+    .size-select:focus {
+      outline: none;
+      border-color: var(--coffee-medium);
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .qty-btn {
-      width: 35px;
-      height: 35px;
-      border: 2px solid var(--coffee-dark);
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--coffee-dark);
       background: var(--white);
       border-radius: 50%;
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease;
       color: var(--coffee-dark);
+      transition: all 0.3s ease;
+      line-height: 1;
     }
 
     .qty-btn:hover {
@@ -281,23 +364,26 @@
     }
 
     .qty-display {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      min-width: 30px;
+      min-width: 24px;
       text-align: center;
     }
 
     .add-to-cart-btn {
-      width: 100%;
-      padding: 0.875rem;
+      width: calc(100% - 3rem);
+      margin: 0 1.5rem 1.5rem;
+      padding: 0.85rem;
       background: var(--coffee-dark);
       color: var(--white);
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
+      letter-spacing: 0.5px;
       transition: all 0.3s ease;
-      font-size: 1rem;
     }
 
     .add-to-cart-btn:hover {
@@ -305,58 +391,79 @@
       transform: scale(1.02);
     }
 
-    .add-to-cart-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
+    /* ── Section divider ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid rgba(44, 24, 16, 0.1);
+      margin: 0 0 5rem;
+    }
+
+    /* ── View all CTA ── */
+    .view-all-cta {
+      text-align: center;
+      padding: 0 3rem 5rem;
+    }
+
+    .view-all-cta p {
+      font-size: 1.05rem;
+      color: var(--coffee-medium);
+      margin-bottom: 1.5rem;
+    }
+
+    .view-all-cta a {
+      display: inline-block;
+      padding: 0.9rem 2.8rem;
+      background: var(--coffee-dark);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      border-radius: 2px;
+      transition: background 0.35s ease;
+    }
+
+    .view-all-cta a:hover {
+      background: var(--coffee-medium);
     }
 
     /* =================== CART SIDEBAR =================== */
     .cart-sidebar {
       position: fixed;
-      top: 0;
-      right: -450px;
-      width: 450px;
-      height: 100vh;
+      top: 0; right: -450px;
+      width: 450px; height: 100vh;
       background: var(--white);
-      box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
+      box-shadow: -5px 0 30px rgba(0,0,0,0.2);
       transition: right 0.4s ease;
       z-index: 2000;
       display: flex;
       flex-direction: column;
     }
 
-    .cart-sidebar.open {
-      right: 0;
-    }
+    .cart-sidebar.open { right: 0; }
 
     .cart-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      opacity: 0;
-      visibility: hidden;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      opacity: 0; visibility: hidden;
       transition: all 0.3s ease;
       z-index: 1999;
     }
 
-    .cart-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .cart-overlay.active { opacity: 1; visibility: visible; }
 
     .cart-header {
       padding: 2rem;
-      border-bottom: 1px solid rgba(44, 24, 16, 0.1);
+      border-bottom: 1px solid rgba(44,24,16,0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .cart-header h2 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 2rem;
       font-weight: 600;
     }
@@ -370,36 +477,19 @@
       padding: 0.5rem;
     }
 
-    .cart-items {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.5rem;
-    }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
 
     .cart-item {
       display: flex;
       justify-content: space-between;
       padding: 1rem;
-      border-bottom: 1px solid rgba(44, 24, 16, 0.1);
+      border-bottom: 1px solid rgba(44,24,16,0.1);
       margin-bottom: 1rem;
     }
 
-    .cart-item-details h4 {
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-      color: var(--coffee-dark);
-    }
-
-    .cart-item-size {
-      font-size: 0.85rem;
-      color: var(--coffee-medium);
-      margin-bottom: 0.25rem;
-    }
-
-    .cart-item-qty {
-      font-size: 0.9rem;
-      color: var(--coffee-medium);
-    }
+    .cart-item-details h4 { font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--coffee-dark); }
+    .cart-item-size { font-size: 0.85rem; color: var(--coffee-medium); margin-bottom: 0.25rem; }
+    .cart-item-qty { font-size: 0.9rem; color: var(--coffee-medium); }
 
     .cart-item-right {
       display: flex;
@@ -408,11 +498,7 @@
       gap: 0.5rem;
     }
 
-    .cart-item-price {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: var(--accent-gold);
-    }
+    .cart-item-price { font-weight: 600; font-size: 1.1rem; color: var(--accent-gold); }
 
     .remove-item {
       font-size: 0.85rem;
@@ -423,15 +509,11 @@
       text-decoration: underline;
     }
 
-    .empty-cart {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: var(--coffee-medium);
-    }
+    .empty-cart { text-align: center; padding: 3rem 2rem; color: var(--coffee-medium); }
 
     .cart-footer {
       padding: 2rem;
-      border-top: 1px solid rgba(44, 24, 16, 0.1);
+      border-top: 1px solid rgba(44,24,16,0.1);
       background: var(--cream);
     }
 
@@ -441,7 +523,7 @@
       font-size: 1.3rem;
       font-weight: 600;
       margin-bottom: 1.5rem;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
     }
 
     .checkout-btn {
@@ -455,20 +537,16 @@
       font-size: 1.1rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
     }
 
-    .checkout-btn:hover {
-      background: var(--coffee-medium);
-      transform: scale(1.02);
-    }
+    .checkout-btn:hover { background: var(--coffee-medium); transform: scale(1.02); }
 
     /* =================== FOOTER =================== */
     footer {
       background: var(--coffee-dark);
       color: var(--cream);
       padding: 3rem 3rem 2rem;
-      margin-top: 4rem;
     }
 
     .footer-content {
@@ -478,7 +556,7 @@
     }
 
     .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 2rem;
       font-weight: 600;
       margin-bottom: 1rem;
@@ -489,7 +567,7 @@
       width: 100%;
       height: 1px;
       background: rgba(245, 241, 237, 0.2);
-      margin: 2rem 0;
+      margin: 1.5rem 0;
     }
 
     .powered-by {
@@ -506,39 +584,31 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: rgba(57, 255, 20, 0.1);
-      border: 1px solid rgba(57, 255, 20, 0.3);
+      padding: 0.4rem 0.9rem;
+      background: rgba(57, 255, 20, 0.08);
+      border: 1px solid rgba(57, 255, 20, 0.25);
       border-radius: 4px;
       text-decoration: none;
       transition: all 0.3s ease;
     }
 
     .powered-by-logo:hover {
-      background: rgba(57, 255, 20, 0.15);
-      border-color: rgba(57, 255, 20, 0.5);
+      background: rgba(57, 255, 20, 0.14);
+      border-color: rgba(57, 255, 20, 0.45);
       transform: translateY(-2px);
     }
 
-    .nexgenix-icon {
-      width: 24px;
-      height: 24px;
-      background: #39FF14;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: #000;
-      font-size: 0.7rem;
-      font-family: 'Courier New', monospace;
+    .powered-by-logo img.ngcs-logo {
+      height: 22px;
+      width: auto;
+      display: block;
     }
 
     .powered-by-logo span {
       color: #39FF14;
       font-weight: 600;
       font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     .copyright {
@@ -546,61 +616,32 @@
       color: rgba(245, 241, 237, 0.5);
     }
 
-    /* =================== RESPONSIVE DESIGN =================== */
-    @media (max-width: 768px) {
-      nav {
-        padding: 1.5rem 1.5rem;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .menu-section {
-        padding: 6rem 1.5rem 3rem;
-      }
-
-      .menu-header h1 {
-        font-size: 2.5rem;
-      }
-
-      .menu-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cart-sidebar {
-        width: 100%;
-        right: -100%;
-      }
-
-      .category-tabs {
-        gap: 0.5rem;
-      }
-
-      .category-tab {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
+    /* =================== RESPONSIVE =================== */
+    @media (max-width: 1024px) {
+      .featured-grid { grid-template-columns: repeat(2, 1fr); }
     }
-  </style>
+
+    @media (max-width: 768px) {
+      nav { padding: 1.5rem 1.5rem; }
+
+      .nav-links { display: none; }
+
+      .menu-page-hero { padding: 7rem 1.5rem 3rem; }
+      .menu-page-hero h1 { font-size: 3rem; }
+
+      .featured-section { padding: 4rem 1.5rem 3rem; }
+      .featured-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+      .cart-sidebar { width: 100%; right: -100%; }
+    }
+
+    /* Fallback: ensure content shows even if IntersectionObserver is slow */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+      </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <nav>
-      <a href="index.html" class="logo">[Your Café Name Here]</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#about">About</a></li>
-        <li><a href="menu.html">Menu</a></li>
-        <li><a href="index.html#location">Visit Us</a></li>
-      </ul>
-      <div class="cart-icon-wrapper" onclick="toggleCart()">
-        <span class="cart-icon">🛒</span>
-        <span class="cart-count" id="cartCount">0</span>
-      </div>
-    </nav>
-  </header>
 
   <!-- Cart Overlay -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
@@ -612,9 +653,7 @@
       <button class="close-cart" onclick="toggleCart()">✕</button>
     </div>
     <div class="cart-items" id="cartItems">
-      <div class="empty-cart">
-        <p>Your cart is empty</p>
-      </div>
+      <div class="empty-cart"><p>Your cart is empty</p></div>
     </div>
     <div class="cart-footer">
       <div class="cart-total">
@@ -625,29 +664,208 @@
     </div>
   </div>
 
-  <!-- Menu Section -->
-  <section class="menu-section">
-    <div class="menu-header">
-      <h1>Our Menu</h1>
-      <p>Lorem ipsum select amet — choose your favorites and add them to your cart</p>
-    </div>
+  <!-- Header -->
+  <header>
+    <nav>
+      <a href="index.html" class="logo">[Your Café Name Here]</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="menu.html" class="active">Menu</a></li>
+        <li><a href="index.html#location">Visit Us</a></li>
+      </ul>
+      <div class="cart-icon-wrapper" onclick="toggleCart()">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+    </nav>
+  </header>
 
-    <!-- Category Tabs -->
-    <div class="category-tabs" id="categoryTabs">
-      <button class="category-tab active" data-category="all">All Items</button>
-      <button class="category-tab" data-category="signature">Signature Drinks</button>
-      <button class="category-tab" data-category="premium">Premium Series</button>
-      <button class="category-tab" data-category="coffee">Coffee</button>
-      <button class="category-tab" data-category="fruit-tea">Fruit Tea</button>
-      <button class="category-tab" data-category="blended">Blended</button>
-      <button class="category-tab" data-category="milk-based">Milk Based</button>
-      <button class="category-tab" data-category="snacks">Snacks</button>
-      <button class="category-tab" data-category="rice-meals">Rice Meals</button>
-    </div>
+  <!-- Page Hero -->
+  <div class="menu-page-hero">
+    <h1>Our Menu</h1>
+    <p>Discover our customer favorites — crafted with care and loved by every visit.</p>
+  </div>
 
-    <!-- Menu Grid -->
-    <div class="menu-grid" id="menuGrid"></div>
-  </section>
+  <!-- Featured Menu Content -->
+  <section class="featured-section">
+
+    <!-- ── Drinks ── -->
+    <p class="featured-section-label reveal">☕ Signature Drinks</p>
+
+    <div class="featured-grid stagger">
+
+      <!-- Drink 1 -->
+      <div class="featured-card reveal">
+        <img src="drink1.png" alt="[Drink Name 1]" class="featured-card-img">
+        <div class="featured-card-body">
+          <h3>[Drink Name 1]</h3>
+          <p class="item-desc">[Short flavor description]</p>
+          <p class="item-price">₱XX / ₱XX</p>
+        </div>
+        <div class="compliment-bubble">
+          "This is my go-to every single morning — I can't start my day without it!"
+          <span class="customer-name">— [Customer Name]</span>
+        </div>
+        <div class="card-actions">
+          <select class="size-select" id="size-drink1">
+            <option value="0">Small (16oz) — ₱XX</option>
+            <option value="0">Large (22oz) — ₱XX</option>
+          </select>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('drink1',-1)">−</button>
+            <span class="qty-display" id="qty-drink1">1</span>
+            <button class="qty-btn" onclick="changeQty('drink1',1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('drink1','[Drink Name 1]')">Add to Cart</button>
+      </div>
+
+      <!-- Drink 2 -->
+      <div class="featured-card reveal">
+        <img src="drink2.png" alt="[Drink Name 2]" class="featured-card-img">
+        <div class="featured-card-body">
+          <h3>[Drink Name 2]</h3>
+          <p class="item-desc">[Short flavor description]</p>
+          <p class="item-price">₱XX / ₱XX</p>
+        </div>
+        <div class="compliment-bubble">
+          "Perfectly sweet and so refreshing — honestly the best drink I've had in a long time."
+          <span class="customer-name">— [Customer Name]</span>
+        </div>
+        <div class="card-actions">
+          <select class="size-select" id="size-drink2">
+            <option value="0">Small (16oz) — ₱XX</option>
+            <option value="0">Large (22oz) — ₱XX</option>
+          </select>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('drink2',-1)">−</button>
+            <span class="qty-display" id="qty-drink2">1</span>
+            <button class="qty-btn" onclick="changeQty('drink2',1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('drink2','[Drink Name 2]')">Add to Cart</button>
+      </div>
+
+      <!-- Drink 3 -->
+      <div class="featured-card reveal">
+        <img src="drink3.png" alt="[Drink Name 3]" class="featured-card-img">
+        <div class="featured-card-body">
+          <h3>[Drink Name 3]</h3>
+          <p class="item-desc">[Short flavor description]</p>
+          <p class="item-price">₱XX / ₱XX</p>
+        </div>
+        <div class="compliment-bubble">
+          "Rich, creamy, and just the right amount of bold. I order this every single visit!"
+          <span class="customer-name">— [Customer Name]</span>
+        </div>
+        <div class="card-actions">
+          <select class="size-select" id="size-drink3">
+            <option value="0">Small (16oz) — ₱XX</option>
+            <option value="0">Large (22oz) — ₱XX</option>
+          </select>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('drink3',-1)">−</button>
+            <span class="qty-display" id="qty-drink3">1</span>
+            <button class="qty-btn" onclick="changeQty('drink3',1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('drink3','[Drink Name 3]')">Add to Cart</button>
+      </div>
+
+    </div><!-- /drinks grid -->
+
+    <hr class="section-divider">
+
+    <!-- ── Snacks ── -->
+    <p class="featured-section-label reveal">🍟 Crowd-Favorite Snacks</p>
+
+    <div class="featured-grid stagger">
+
+      <!-- Snack 1 -->
+      <div class="featured-card reveal">
+        <img src="snack1.png" alt="[Snack Name 1]" class="featured-card-img">
+        <div class="featured-card-body">
+          <h3>[Snack Name 1]</h3>
+          <p class="item-desc">[Short description]</p>
+          <p class="item-price">₱XX</p>
+        </div>
+        <div class="compliment-bubble">
+          "Crispy on the outside, soft inside — pairs amazingly well with any drink here!"
+          <span class="customer-name">— [Customer Name]</span>
+        </div>
+        <div class="card-actions">
+          <select class="size-select" id="size-snack1">
+            <option value="0">Regular — ₱XX</option>
+          </select>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('snack1',-1)">−</button>
+            <span class="qty-display" id="qty-snack1">1</span>
+            <button class="qty-btn" onclick="changeQty('snack1',1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('snack1','[Snack Name 1]')">Add to Cart</button>
+      </div>
+
+      <!-- Snack 2 -->
+      <div class="featured-card reveal">
+        <img src="snack2.png" alt="[Snack Name 2]" class="featured-card-img">
+        <div class="featured-card-body">
+          <h3>[Snack Name 2]</h3>
+          <p class="item-desc">[Short description]</p>
+          <p class="item-price">₱XX</p>
+        </div>
+        <div class="compliment-bubble">
+          "So cheesy and satisfying! My kids absolutely love this — we always order extra."
+          <span class="customer-name">— [Customer Name]</span>
+        </div>
+        <div class="card-actions">
+          <select class="size-select" id="size-snack2">
+            <option value="0">Regular — ₱XX</option>
+          </select>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('snack2',-1)">−</button>
+            <span class="qty-display" id="qty-snack2">1</span>
+            <button class="qty-btn" onclick="changeQty('snack2',1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('snack2','[Snack Name 2]')">Add to Cart</button>
+      </div>
+
+      <!-- Snack 3 -->
+      <div class="featured-card reveal">
+        <img src="snack3.png" alt="[Snack Name 3]" class="featured-card-img">
+        <div class="featured-card-body">
+          <h3>[Snack Name 3]</h3>
+          <p class="item-desc">[Short description]</p>
+          <p class="item-price">₱XX</p>
+        </div>
+        <div class="compliment-bubble">
+          "The perfect afternoon snack — I can't visit without grabbing one of these!"
+          <span class="customer-name">— [Customer Name]</span>
+        </div>
+        <div class="card-actions">
+          <select class="size-select" id="size-snack3">
+            <option value="0">Regular — ₱XX</option>
+          </select>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('snack3',-1)">−</button>
+            <span class="qty-display" id="qty-snack3">1</span>
+            <button class="qty-btn" onclick="changeQty('snack3',1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('snack3','[Snack Name 3]')">Add to Cart</button>
+      </div>
+
+    </div><!-- /snacks grid -->
+
+  </section><!-- /featured-section -->
+
+  <!-- View Full Menu CTA (optional — remove if this IS the full menu) -->
+  <div class="view-all-cta reveal">
+    <p>Want to see everything we offer?</p>
+    <a href="menu.html#full-menu">VIEW ALL ITEMS &rarr;</a>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -657,7 +875,7 @@
       <div class="powered-by">
         Powered by
         <a href="https://nexgenixcreativesolutions.github.io" target="_blank" class="powered-by-logo">
-          <div class="nexgenix-icon">NG</div>
+          <img src="ngcs.png" alt="NGCS Logo" class="ngcs-logo">
           <span>NexGenix Creative Solutions</span>
         </a>
       </div>
@@ -666,181 +884,40 @@
   </footer>
 
   <script>
-    // Menu Data — replace item names, descriptions, sizes, and prices with your actual menu
-    const menuData = {
-      'signature': [
-        { name: 'Brew Ipsum Classic', description: 'Lorem ipsum flavor amet', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Velvet Dolor Blend', description: 'Consectetur sip adipiscing', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Amet Latte Supreme', description: 'Sed do eiusmod tempor', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Consectetur Frost', description: 'Incididunt ut labore blend', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Adipiscing Swirl', description: 'Dolore magna aliqua sip', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] }
-      ],
-      'premium': [
-        { name: 'Eiusmod Reserve', description: 'Ut enim ad minim veniam', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Tempor Gold Blend', description: 'Quis nostrud exercitation', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Incididunt Mousse', description: 'Ullamco laboris nisi brew', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Labore Crème Special', description: 'Aliquip ex ea commodo', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Dolore Magna Deluxe', description: 'Consequat sip premium amet', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] }
-      ],
-      'coffee': [
-        { name: 'Americano Veniam', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] },
-        { name: 'Nostrud Latte', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] },
-        { name: 'Exercitation Mocha', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] },
-        { name: 'Ullamco Macchiato', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] },
-        { name: 'Aliquip Caramel Brew', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] }
-      ],
-      'fruit-tea': [
-        { name: 'Commodo Citrus Splash', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Consequat Berry Burst', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Duis Lychee Aute', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Irure Mango Fizz', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Reprehenderit Peach', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] }
-      ],
-      'blended': [
-        { name: 'Voluptate Salted Caramel', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Velit Esse Chocolate', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Cillum Cookies Blend', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] },
-        { name: 'Fugiat Strawberry Frost', sizes: [{size: 'Small (16oz)', price: 0}, {size: 'Large (22oz)', price: 0}] }
-      ],
-      'milk-based': [
-        { name: 'Nulla Matcha Latte', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] },
-        { name: 'Pariatur Chocolate Milk', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] },
-        { name: 'Excepteur Strawberry Milk', sizes: [{size: 'Iced 16oz', price: 0}, {size: 'Iced 22oz', price: 0}, {size: 'Hot 8oz', price: 0}, {size: 'Hot 12oz', price: 0}] }
-      ],
-      'snacks': [
-        { name: 'Nulla Pariatur Fries', description: 'Choose your dipping sauce', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Excepteur Cheese Sticks', description: 'Lorem ipsum pieces', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Sint Chicken Bites', description: 'Occaecat cupidatat pieces', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Non Proident Nachos', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Sunt In Culpa Cordon', sizes: [{size: 'Regular', price: 0}] }
-      ],
-      'rice-meals': [
-        { name: 'Qui Officia Pork Meal', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Deserunt Mollit Chicken', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Anim Id Est Longganisa', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Lorem Ipsum Hungarian', sizes: [{size: 'Regular', price: 0}] },
-        { name: 'Dolor Sit Amet Siomai', description: 'Lorem ipsum pieces', sizes: [{size: 'Regular', price: 0}] }
-      ]
-    };
-
-    // Cart state
+    /* ── Cart state ── */
     let cart = [];
-    let selectedItems = {};
+    const qtys = { drink1:1, drink2:1, drink3:1, snack1:1, snack2:1, snack3:1 };
 
-    // Initialize
-    function init() {
-      renderMenu('all');
-      setupCategoryTabs();
-      updateCartDisplay();
+    function changeQty(id, delta) {
+      qtys[id] = Math.max(1, (qtys[id] || 1) + delta);
+      document.getElementById('qty-' + id).textContent = qtys[id];
     }
 
-    // Setup category tabs
-    function setupCategoryTabs() {
-      const tabs = document.querySelectorAll('.category-tab');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          renderMenu(tab.dataset.category);
-        });
-      });
-    }
+    function addToCart(id, name) {
+      const select = document.getElementById('size-' + id);
+      const sizeLabel = select.options[select.selectedIndex].text.split(' — ')[0];
+      const price = parseInt(select.value) || 0;
+      const qty   = qtys[id] || 1;
 
-    // Render menu items
-    function renderMenu(category) {
-      const grid = document.getElementById('menuGrid');
-      grid.innerHTML = '';
+      cart.push({ name, size: sizeLabel, price, quantity: qty });
 
-      let items = [];
-      if (category === 'all') {
-        Object.values(menuData).forEach(cat => items.push(...cat));
-      } else {
-        items = menuData[category] || [];
-      }
-
-      items.forEach((item, index) => {
-        const itemId = `${category}-${index}`;
-        const card = createMenuCard(item, itemId);
-        grid.appendChild(card);
-      });
-    }
-
-    // Create menu card
-    function createMenuCard(item, itemId) {
-      const div = document.createElement('div');
-      div.className = 'menu-item';
-      
-      const sizesHTML = item.sizes.map((size, idx) => `
-        <div class="size-option ${idx === 0 ? 'selected' : ''}" onclick="selectSize('${itemId}', ${idx})">
-          <span class="size-label">${size.size}</span>
-          <span class="size-price">₱${size.price}</span>
-        </div>
-      `).join('');
-
-      div.innerHTML = `
-        <div class="item-header">
-          <h3 class="item-name">${item.name}</h3>
-          ${item.description ? `<p class="item-description">${item.description}</p>` : ''}
-        </div>
-        <div class="item-sizes" id="sizes-${itemId}">
-          ${sizesHTML}
-        </div>
-        <div class="quantity-control">
-          <button class="qty-btn" onclick="changeQty('${itemId}', -1)">−</button>
-          <span class="qty-display" id="qty-${itemId}">1</span>
-          <button class="qty-btn" onclick="changeQty('${itemId}', 1)">+</button>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('${itemId}', '${item.name}', ${JSON.stringify(item.sizes).replace(/"/g, '&quot;')})">
-          Add to Cart
-        </button>
-      `;
-
-      selectedItems[itemId] = { sizeIndex: 0, quantity: 1 };
-      return div;
-    }
-
-    // Select size
-    function selectSize(itemId, sizeIndex) {
-      const sizesContainer = document.getElementById(`sizes-${itemId}`);
-      const options = sizesContainer.querySelectorAll('.size-option');
-      options.forEach((opt, idx) => {
-        opt.classList.toggle('selected', idx === sizeIndex);
-      });
-      selectedItems[itemId].sizeIndex = sizeIndex;
-    }
-
-    // Change quantity
-    function changeQty(itemId, delta) {
-      const qtyDisplay = document.getElementById(`qty-${itemId}`);
-      let qty = parseInt(qtyDisplay.textContent);
-      qty = Math.max(1, qty + delta);
-      qtyDisplay.textContent = qty;
-      selectedItems[itemId].quantity = qty;
-    }
-
-    // Add to cart
-    function addToCart(itemId, itemName, sizes) {
-      const selected = selectedItems[itemId];
-      const size = sizes[selected.sizeIndex];
-      
-      cart.push({
-        name: itemName,
-        size: size.size,
-        price: size.price,
-        quantity: selected.quantity
-      });
-
-      // Reset quantity
-      document.getElementById(`qty-${itemId}`).textContent = '1';
-      selectedItems[itemId].quantity = 1;
+      // Reset qty
+      qtys[id] = 1;
+      document.getElementById('qty-' + id).textContent = '1';
 
       updateCartDisplay();
-      
-      // Show notification
-      alert(`${itemName} (${size.size}) added to cart!`);
+
+      // Brief visual feedback
+      const btn = event.currentTarget;
+      const original = btn.textContent;
+      btn.textContent = '✓ Added!';
+      btn.style.background = 'var(--tea-green)';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+      }, 1400);
     }
 
-    // Update cart display
     function updateCartDisplay() {
       const cartCount = document.getElementById('cartCount');
       const cartItems = document.getElementById('cartItems');
@@ -855,13 +932,12 @@
       }
 
       let total = 0;
-      let itemsHTML = '';
+      let html  = '';
 
       cart.forEach((item, index) => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
-
-        itemsHTML += `
+        html += `
           <div class="cart-item">
             <div class="cart-item-details">
               <h4>${item.name}</h4>
@@ -872,58 +948,68 @@
               <span class="cart-item-price">₱${itemTotal}</span>
               <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
             </div>
-          </div>
-        `;
+          </div>`;
       });
 
-      cartItems.innerHTML = itemsHTML;
+      cartItems.innerHTML = html;
       cartTotal.textContent = `₱${total}`;
     }
 
-    // Remove from cart
     function removeFromCart(index) {
       cart.splice(index, 1);
       updateCartDisplay();
     }
 
-    // Toggle cart
     function toggleCart() {
-      const sidebar = document.getElementById('cartSidebar');
-      const overlay = document.getElementById('cartOverlay');
-      
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('active');
+      document.getElementById('cartSidebar').classList.toggle('open');
+      document.getElementById('cartOverlay').classList.toggle('active');
     }
 
-    // Checkout — replace the Messenger page ID with the client's own
     function checkout() {
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-      }
+      if (cart.length === 0) { alert('Your cart is empty!'); return; }
 
       let message = 'Hi! I would like to order the following:%0A%0A';
-      
-      let total = 0;
-      cart.forEach((item, index) => {
+      let total   = 0;
+
+      cart.forEach((item, i) => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
-        message += `${index + 1}. ${item.name}%0A`;
+        message += `${i + 1}. ${item.name}%0A`;
         message += `   Size: ${item.size}%0A`;
         message += `   Quantity: ${item.quantity}%0A`;
         message += `   Price: ₱${itemTotal}%0A%0A`;
       });
 
-      message += `TOTAL: ₱${total}%0A%0A`;
-      message += 'Please confirm my order. Thank you!';
+      message += `TOTAL: ₱${total}%0A%0APlease confirm my order. Thank you!`;
 
       // TODO: Replace [MESSENGER_PAGE_ID] with the client's Facebook Page ID
-      const messengerURL = `https://m.me/[MESSENGER_PAGE_ID]?text=${message}`;
-      window.open(messengerURL, '_blank');
+      window.open(`https://m.me/[MESSENGER_PAGE_ID]?text=${message}`, '_blank');
     }
 
-    // Initialize on page load
-    init();
+    /* ── Scroll reveals ── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    // Force-check on load in case elements are already in viewport
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) el.classList.add('visible');
+      });
+    });
+
+    /* ── Header shadow on scroll ── */
+    window.addEventListener('scroll', () => {
+      document.querySelector('header').style.boxShadow =
+        window.pageYOffset > 60 ? '0 2px 20px rgba(44,24,16,0.12)' : 'none';
+    }, { passive: true });
   </script>
 </body>
 </html>
