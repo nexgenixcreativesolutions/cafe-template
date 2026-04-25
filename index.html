@@ -6,7 +6,8 @@
   <title>NexGenix Café Template</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
   
   <style>
     :root {
@@ -30,7 +31,7 @@
     }
 
     body {
-      font-family: 'Jost', sans-serif;
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       background-color: var(--cream);
       color: var(--coffee-dark);
       line-height: 1.7;
@@ -60,7 +61,7 @@
     }
 
     .logo {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 1.8rem;
       font-weight: 600;
       color: var(--coffee-dark);
@@ -146,14 +147,13 @@
     }
 
     .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 5.5rem;
       font-weight: 300;
       color: var(--coffee-dark);
       margin-bottom: 1.5rem;
       letter-spacing: -1px;
       line-height: 1.1;
-      opacity: 0;
       animation: fadeInUp 1s ease forwards;
     }
 
@@ -168,8 +168,7 @@
       color: var(--coffee-medium);
       max-width: 600px;
       margin: 0 auto 3rem;
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.2s forwards;
+      animation: fadeInUp 1s ease 0.2s both;
     }
 
     .cta-button {
@@ -183,8 +182,7 @@
       letter-spacing: 1px;
       border-radius: 2px;
       transition: all 0.4s ease;
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.4s forwards;
+      animation: fadeInUp 1s ease 0.4s both;
       position: relative;
       overflow: hidden;
     }
@@ -448,7 +446,7 @@
     }
 
     .about-text h2 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 3.5rem;
       font-weight: 300;
       color: var(--coffee-dark);
@@ -476,7 +474,7 @@
     }
 
     .menu-header h2 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 4rem;
       font-weight: 300;
       color: var(--coffee-dark);
@@ -509,7 +507,7 @@
     }
 
     .menu-category h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 2.2rem;
       font-weight: 600;
       color: var(--coffee-dark);
@@ -564,7 +562,7 @@
     }
 
     .location h2 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 4rem;
       font-weight: 300;
       color: var(--coffee-dark);
@@ -583,7 +581,7 @@
     }
 
     .location-item h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 1.5rem;
       font-weight: 600;
       color: var(--coffee-dark);
@@ -610,7 +608,7 @@
     }
 
     .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 2rem;
       font-weight: 600;
       margin-bottom: 1rem;
@@ -782,7 +780,208 @@
         font-size: 2rem;
       }
     }
-  </style>
+    /* =================== CUSTOMER FAVORITES SECTION =================== */
+    .favorites {
+      padding: 8rem 3rem;
+      background: var(--cream);
+    }
+
+    .favorites-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 5rem;
+    }
+
+    .favorites-header h2 {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 4rem;
+      font-weight: 300;
+      color: var(--coffee-dark);
+      margin-bottom: 1rem;
+    }
+
+    .favorites-header p {
+      font-size: 1.1rem;
+      color: var(--coffee-medium);
+    }
+
+    .favorites-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .favorites-row {
+      display: grid;
+      gap: 3rem;
+      margin-bottom: 5rem;
+    }
+
+    .favorites-row.drinks-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .favorites-row.snacks-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .favorites-category-label {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--coffee-medium);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .favorites-category-label::before,
+    .favorites-category-label::after {
+      content: '';
+      width: 60px;
+      height: 1px;
+      background: var(--accent-gold);
+    }
+
+    .fav-card {
+      background: var(--white);
+      border-radius: 4px;
+      overflow: visible;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.4s ease;
+    }
+
+    .fav-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(44, 24, 16, 0.12);
+    }
+
+    .fav-card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fav-card-body {
+      padding: 1.8rem 2rem 2rem;
+    }
+
+    .fav-card-name {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--coffee-dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .fav-card-desc {
+      font-size: 0.9rem;
+      color: var(--coffee-medium);
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .fav-card-price {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+    }
+
+    /* ── Customer compliment bubble ── */
+    .compliment-bubble {
+      position: absolute;
+      top: -22px;
+      right: 20px;
+      background: var(--coffee-dark);
+      color: var(--cream);
+      font-size: 0.82rem;
+      font-style: italic;
+      line-height: 1.5;
+      padding: 0.65rem 1rem;
+      border-radius: 14px 14px 14px 0;
+      max-width: 200px;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgba(44,24,16,0.18);
+      opacity: 0;
+      transform: translateY(6px) scale(0.95);
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      pointer-events: none;
+    }
+
+    .compliment-bubble::before {
+      content: '"';
+      font-size: 1.1rem;
+      color: var(--accent-gold);
+      margin-right: 2px;
+    }
+
+    .compliment-bubble::after {
+      content: '"';
+      font-size: 1.1rem;
+      color: var(--accent-gold);
+      margin-left: 2px;
+    }
+
+    .fav-card:hover .compliment-bubble {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* star badge */
+    .fav-star-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--accent-gold);
+      color: var(--coffee-dark);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 1024px) {
+      .favorites-row.drinks-row,
+      .favorites-row.snacks-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .favorites {
+        padding: 4rem 1.5rem;
+      }
+
+      .favorites-header h2 {
+        font-size: 2.5rem;
+      }
+
+      .favorites-row.drinks-row,
+      .favorites-row.snacks-row {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .favorites-header h2 {
+        font-size: 2rem;
+      }
+    }
+
+    /* Fallback: ensure content shows even if IntersectionObserver is slow */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+      </style>
 </head>
 <body>
   <!-- Scroll progress bar -->
@@ -844,202 +1043,110 @@
     </div>
   </section>
 
-  <!-- Menu Section -->
-  <section class="menu" id="menu">
-    <div class="menu-header">
-      <h2 class="section-title reveal">Our Menu</h2>
-      <p class="reveal">Lorem ipsum offerings amet — freshly prepared drinks, snacks, and meals to satisfy every craving.</p>
+
+  <!-- Customer Favorites Section -->
+  <section class="favorites" id="menu">
+    <div class="favorites-header">
+      <h2 class="section-title reveal">Customer Favorites</h2>
+      <p class="reveal">The ones they keep coming back for — our most-loved drinks and snacks, straight from the hearts of our regulars.</p>
     </div>
 
-    <div class="menu-grid stagger">
-      <!-- Category 1 -->
-      <div class="menu-category reveal">
-        <h3>Signature Drinks</h3>
-        <div class="menu-item">
-          <h4>Brew Ipsum Classic <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
+    <div class="favorites-grid">
+
+      <!-- Drinks Row Label -->
+      <div class="favorites-category-label reveal">☕ Fan-Favorite Drinks</div>
+
+      <!-- Drinks Row -->
+      <div class="favorites-row drinks-row stagger">
+
+        <!-- Drink 1 -->
+        <div class="fav-card reveal">
+          <span class="fav-star-badge">★ Best Seller</span>
+          <div class="compliment-bubble">This is my daily order — I can't start my day without it!</div>
+          <img src="drink1.png" alt="[Drink 1 Name]" class="fav-card-img">
+          <div class="fav-card-body">
+            <h3 class="fav-card-name">[Drink 1 Name]</h3>
+            <p class="fav-card-desc">[Short flavor description]</p>
+            <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Small / Large</span></p>
+          </div>
         </div>
-        <div class="menu-item">
-          <h4>Velvet Dolor Blend <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
+
+        <!-- Drink 2 -->
+        <div class="fav-card reveal">
+          <span class="fav-star-badge">★ Top Rated</span>
+          <div class="compliment-bubble">Perfectly sweet and creamy — every sip is a treat!</div>
+          <img src="drink2.png" alt="[Drink 2 Name]" class="fav-card-img">
+          <div class="fav-card-body">
+            <h3 class="fav-card-name">[Drink 2 Name]</h3>
+            <p class="fav-card-desc">[Short flavor description]</p>
+            <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Small / Large</span></p>
+          </div>
         </div>
-        <div class="menu-item">
-          <h4>Amet Latte Supreme <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
+
+        <!-- Drink 3 -->
+        <div class="fav-card reveal">
+          <span class="fav-star-badge">★ Must Try</span>
+          <div class="compliment-bubble">So refreshing! My whole barkada orders this every visit.</div>
+          <img src="drink3.png" alt="[Drink 3 Name]" class="fav-card-img">
+          <div class="fav-card-body">
+            <h3 class="fav-card-name">[Drink 3 Name]</h3>
+            <p class="fav-card-desc">[Short flavor description]</p>
+            <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Small / Large</span></p>
+          </div>
         </div>
-        <div class="menu-item">
-          <h4>Consectetur Frost <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
+
+      </div><!-- /.drinks-row -->
+
+      <!-- Snacks Row Label -->
+      <div class="favorites-category-label reveal">🍟 Fan-Favorite Snacks</div>
+
+      <!-- Snacks Row -->
+      <div class="favorites-row snacks-row stagger">
+
+        <!-- Snack 1 -->
+        <div class="fav-card reveal">
+          <span class="fav-star-badge">★ Best Seller</span>
+          <div class="compliment-bubble">Crispy outside, soft inside — pairs perfectly with any drink!</div>
+          <img src="snack1.png" alt="[Snack 1 Name]" class="fav-card-img">
+          <div class="fav-card-body">
+            <h3 class="fav-card-name">[Snack 1 Name]</h3>
+            <p class="fav-card-desc">[Short description]</p>
+            <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Regular</span></p>
+          </div>
         </div>
-        <div class="menu-item">
-          <h4>Adipiscing Swirl <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
+
+        <!-- Snack 2 -->
+        <div class="fav-card reveal">
+          <span class="fav-star-badge">★ Top Rated</span>
+          <div class="compliment-bubble">Cheesy and addicting — I always order an extra serving!</div>
+          <img src="snack2.png" alt="[Snack 2 Name]" class="fav-card-img">
+          <div class="fav-card-body">
+            <h3 class="fav-card-name">[Snack 2 Name]</h3>
+            <p class="fav-card-desc">[Short description]</p>
+            <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Regular</span></p>
+          </div>
         </div>
+
+        <!-- Snack 3 -->
+        <div class="fav-card reveal">
+          <span class="fav-star-badge">★ Must Try</span>
+          <div class="compliment-bubble">The crunch is unreal. Best snack on the menu, hands down!</div>
+          <img src="snack3.png" alt="[Snack 3 Name]" class="fav-card-img">
+          <div class="fav-card-body">
+            <h3 class="fav-card-name">[Snack 3 Name]</h3>
+            <p class="fav-card-desc">[Short description]</p>
+            <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Regular</span></p>
+          </div>
+        </div>
+
+      </div><!-- /.snacks-row -->
+
+      <!-- CTA to full menu -->
+      <div style="text-align:center; margin-top:1rem;" class="reveal">
+        <a href="menu.html" class="cta-button" style="opacity:1; animation:none;">SEE FULL MENU</a>
       </div>
 
-      <!-- Category 2 -->
-      <div class="menu-category reveal">
-        <h3>Premium Series</h3>
-        <div class="menu-item">
-          <h4>Eiusmod Reserve <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Tempor Gold Blend <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Incididunt Mousse <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Labore Crème Special <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Dolore Magna Deluxe <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-      </div>
-
-      <!-- Category 3 -->
-      <div class="menu-category reveal">
-        <h3>Coffee Selection</h3>
-        <div class="menu-item">
-          <h4>Americano Veniam <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Iced 16oz / 22oz • Hot 8oz / 12oz</p>
-        </div>
-        <div class="menu-item">
-          <h4>Nostrud Latte <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Iced 16oz / 22oz • Hot 8oz / 12oz</p>
-        </div>
-        <div class="menu-item">
-          <h4>Exercitation Mocha <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Iced 16oz / 22oz • Hot 8oz / 12oz</p>
-        </div>
-        <div class="menu-item">
-          <h4>Ullamco Macchiato <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Iced 16oz / 22oz • Hot 8oz / 12oz</p>
-        </div>
-        <div class="menu-item">
-          <h4>Aliquip Caramel Brew <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Iced 16oz / 22oz • Hot 8oz / 12oz</p>
-        </div>
-      </div>
-
-      <!-- Category 4 -->
-      <div class="menu-category reveal">
-        <h3>Fruit Tea &amp; Refreshers</h3>
-        <div class="menu-item">
-          <h4>Commodo Citrus Splash <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Consequat Berry Burst <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Duis Lychee Aute <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Irure Mango Fizz <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Reprehenderit Peach <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-      </div>
-
-      <!-- Category 5 -->
-      <div class="menu-category reveal">
-        <h3>Blended Specials</h3>
-        <div class="menu-item">
-          <h4>Voluptate Salted Caramel <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Velit Esse Chocolate <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Cillum Cookies Blend <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-        <div class="menu-item">
-          <h4>Fugiat Strawberry Frost <span style="float: right; color: var(--accent-gold);">₱XX / ₱XX</span></h4>
-          <p>Small (16 oz) / Large (22 oz)</p>
-        </div>
-      </div>
-
-      <!-- Category 6 -->
-      <div class="menu-category reveal">
-        <h3>Snacks &amp; Bites</h3>
-        <div class="menu-item">
-          <h4>Nulla Pariatur Fries <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-          <p>Choose your dipping sauce</p>
-        </div>
-        <div class="menu-item">
-          <h4>Excepteur Cheese Sticks <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Sint Chicken Bites <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Occaecat Nachos <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Cupidatat Cordon <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-      </div>
-
-      <!-- Category 7 -->
-      <div class="menu-category reveal">
-        <h3>Rice Meals</h3>
-        <div class="menu-item">
-          <h4>Non Proident Pork Meal <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Sunt In Culpa Chicken <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Qui Officia Longganisa <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Deserunt Mollit Siomai <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Anim Id Est Laborum <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-      </div>
-
-      <!-- Category 8 -->
-      <div class="menu-category reveal">
-        <h3>Add-Ons &amp; Extras</h3>
-        <div class="menu-item">
-          <h4>Pearl / Tapioca <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Crushed Topping <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Flavored Syrup <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Cream Cheese Foam <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Whipped Cream <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Espresso Shot <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-        <div class="menu-item">
-          <h4>Extra Rice / Egg <span style="float: right; color: var(--accent-gold);">₱XX</span></h4>
-        </div>
-      </div>
-    </div>
+    </div><!-- /.favorites-grid -->
   </section>
 
   <!-- Location Section -->
@@ -1104,7 +1211,7 @@
     </div>
 
     <p class="powered-by">
-      Powered by <a href="https://nexgenixcreativesolutions.github.io" target="_blank">NexGenix Creative Solutions <img src="ngcs.png" alt="NGCS Logo"></a>
+      Powered by <a href="https://nexgenixcreativesolutions.github.io" target="_blank"><img src="ngcs.png" alt="NGCS Logo"> NexGenix Creative Solutions</a>
     </p>
   </footer>
 
@@ -1191,21 +1298,23 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-
-          // Fire section-title underline draw
-          if (entry.target.classList.contains('section-title')) {
-            entry.target.classList.add('visible');
-          }
-
           revealObserver.unobserve(entry.target);
         }
       });
     }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0,
+      rootMargin: '0px 0px 0px 0px'
     });
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Force-show any reveals already in viewport on load
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 100) el.classList.add('visible');
+      });
+    });
 
     /* ─────────────────────────────────────────
        MENU CATEGORY ENTRANCE — STAGGER WITHIN
