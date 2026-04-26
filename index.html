@@ -6,1627 +6,756 @@
   <title>NexGenix Café Template</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
-  
   <style>
     :root {
-      --coffee-dark: #2c1810;
+      --coffee-dark:   #2c1810;
       --coffee-medium: #6f4e37;
-      --coffee-light: #a67c52;
-      --cream: #f5f1ed;
-      --tea-green: #8b9d83;
-      --accent-gold: #d4a574;
-      --white: #ffffff;
+      --coffee-light:  #a67c52;
+      --cream:         #f5f1ed;
+      --tea-green:     #8b9d83;
+      --accent-gold:   #d4a574;
+      --white:         #ffffff;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
     body {
-      font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-      background-color: var(--cream);
-      color: var(--coffee-dark);
-      line-height: 1.7;
-      overflow-x: hidden;
+      font-family:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+      background-color:var(--cream); color:var(--coffee-dark);
+      line-height:1.7; overflow-x:hidden;
     }
 
-    /* =================== HEADER =================== */
+    /* ── MILK POUR INTRO ── */
+    body.intro-active { overflow:hidden; }
+    #milk-intro { position:fixed; inset:0; z-index:99999; pointer-events:all; background:#0f0603; }
+    #milk-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+    #milk-stream {
+      position:absolute; top:0; left:50%; transform:translateX(-50%);
+      width:10px; height:0; z-index:5; pointer-events:none;
+      background:linear-gradient(to bottom,
+        rgba(255,255,255,0) 0%,rgba(255,252,248,.92) 4%,
+        rgba(240,228,208,.95) 55%,rgba(220,195,158,.80) 100%);
+      border-radius:0 0 5px 5px; transform-origin:top center;
+    }
+    #milk-intro.dissolve { transition:opacity 1.4s ease-in-out; opacity:0; pointer-events:none; }
+
+    /* ── SCROLL PROGRESS ── */
+    #scroll-progress {
+      position:fixed; top:0; left:0; height:2px;
+      background:linear-gradient(90deg,var(--accent-gold),var(--coffee-medium));
+      width:0%; z-index:9999; transition:width .1s linear;
+    }
+
+    /* ── HEADER ── */
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(245, 241, 237, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(44, 24, 16, 0.1);
-      z-index: 1000;
-      transition: all 0.3s ease;
+      position:fixed; top:0; left:0; width:100%;
+      background:rgba(245,241,237,.95); backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(44,24,16,.1); z-index:1000; transition:all .3s ease;
     }
-
     nav {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1.5rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      max-width:1400px; margin:0 auto; padding:1.5rem 3rem;
+      display:flex; justify-content:space-between; align-items:center;
     }
-
     .logo {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--coffee-dark);
-      letter-spacing: 1px;
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:1.8rem; font-weight:600; color:var(--coffee-dark); letter-spacing:1px;
     }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
     .nav-links a {
-      text-decoration: none;
-      color: var(--coffee-medium);
-      font-size: 0.95rem;
-      font-weight: 400;
-      transition: color 0.3s ease;
-      position: relative;
+      text-decoration:none; color:var(--coffee-medium);
+      font-size:.95rem; font-weight:400; transition:color .3s ease; position:relative;
     }
-
     .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: var(--coffee-medium);
-      transition: width 0.3s ease;
+      content:''; position:absolute; bottom:-5px; left:0;
+      width:0; height:1px; background:var(--coffee-medium); transition:width .3s ease;
     }
+    .nav-links a:hover, .nav-links a.active { color:var(--coffee-dark); }
+    .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
+    .menu-toggle { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+    .menu-toggle span { width:25px; height:2px; background:var(--coffee-dark); transition:all .3s ease; }
 
-    .nav-links a:hover {
-      color: var(--coffee-dark);
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    .menu-toggle span {
-      width: 25px;
-      height: 2px;
-      background: var(--coffee-dark);
-      transition: all 0.3s ease;
-    }
-
-    /* =================== HERO SECTION =================== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8rem 3rem 4rem;
-      background: linear-gradient(135deg, var(--cream) 0%, #ebe7e3 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    .hero-content {
-      max-width: 1200px;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 5.5rem;
-      font-weight: 300;
-      color: var(--coffee-dark);
-      margin-bottom: 1.5rem;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      animation: fadeInUp 1s ease forwards;
-    }
-
-    .hero h1 strong {
-      font-weight: 700;
-      display: block;
-      color: var(--coffee-medium);
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      color: var(--coffee-medium);
-      max-width: 600px;
-      margin: 0 auto 3rem;
-      animation: fadeInUp 1s ease 0.2s both;
-    }
-
-    .cta-button {
-      display: inline-block;
-      padding: 1rem 3rem;
-      background: var(--coffee-dark);
-      color: var(--white);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1rem;
-      letter-spacing: 1px;
-      border-radius: 2px;
-      transition: all 0.4s ease;
-      animation: fadeInUp 1s ease 0.4s both;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: var(--coffee-medium);
-      transition: left 0.4s ease;
-      z-index: -1;
-    }
-
-    .cta-button:hover::before {
-      left: 0;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-60px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(60px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes floatBob {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(-14px); }
-    }
-
-    @keyframes rotateSlow {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    @keyframes scaleIn {
-      from {
-        opacity: 0;
-        transform: scale(0.88);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    @keyframes lineDraw {
-      from { width: 0; }
-      to   { width: 60px; }
-    }
-
-    /* ── Scroll-reveal base states ── */
+    /* ── REVEAL ── */
     .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity:0; transform:translateY(40px);
+      transition:opacity .75s cubic-bezier(.22,1,.36,1), transform .75s cubic-bezier(.22,1,.36,1);
     }
-    .reveal.from-left  { transform: translateX(-60px); }
-    .reveal.from-right { transform: translateX(60px); }
-    .reveal.scale-up   { transform: scale(0.88); }
+    .reveal.from-left  { transform:translateX(-60px); }
+    .reveal.from-right { transform:translateX(60px); }
+    .reveal.scale-up   { transform:scale(.88); }
+    .reveal.visible    { opacity:1; transform:translateY(0) translateX(0) scale(1); }
+    .stagger .reveal:nth-child(1){transition-delay:0s}
+    .stagger .reveal:nth-child(2){transition-delay:.12s}
+    .stagger .reveal:nth-child(3){transition-delay:.24s}
+    .stagger .reveal:nth-child(4){transition-delay:.36s}
+    .stagger .reveal:nth-child(5){transition-delay:.48s}
+    .stagger .reveal:nth-child(6){transition-delay:.60s}
+    .stagger .reveal:nth-child(7){transition-delay:.72s}
+    .stagger .reveal:nth-child(8){transition-delay:.84s}
+    @media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}}
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0) translateX(0) scale(1);
+    /* ── KEYFRAMES ── */
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes floatBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+    @keyframes rotateSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes lineDraw { from{width:0} to{width:60px} }
+    @keyframes subtlePulse {
+      0%,100%{box-shadow:0 0 0 0 rgba(44,24,16,0)}
+      50%{box-shadow:0 0 0 8px rgba(44,24,16,.08)}
     }
 
-    /* Stagger delays for children */
-    .stagger .reveal:nth-child(1)  { transition-delay: 0s;    }
-    .stagger .reveal:nth-child(2)  { transition-delay: 0.12s; }
-    .stagger .reveal:nth-child(3)  { transition-delay: 0.24s; }
-    .stagger .reveal:nth-child(4)  { transition-delay: 0.36s; }
-    .stagger .reveal:nth-child(5)  { transition-delay: 0.48s; }
-    .stagger .reveal:nth-child(6)  { transition-delay: 0.60s; }
-    .stagger .reveal:nth-child(7)  { transition-delay: 0.72s; }
-    .stagger .reveal:nth-child(8)  { transition-delay: 0.84s; }
-
-    /* ── Hero decorative blob ── */
-    .hero-blob {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
+    /* ── HERO ── */
+    .hero {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:8rem 3rem 4rem;
+      background:linear-gradient(135deg,var(--cream) 0%,#ebe7e3 100%);
+      position:relative; overflow:hidden;
     }
+    .hero::before {
+      content:''; position:absolute; top:-50%; right:-20%;
+      width:800px; height:800px;
+      background:radial-gradient(circle,rgba(212,165,116,.1) 0%,transparent 70%);
+      border-radius:50%;
+    }
+    .hero-blob { position:absolute; border-radius:50%; pointer-events:none; }
     .hero-blob-1 {
-      width: 500px; height: 500px;
-      top: -100px; right: -100px;
-      background: radial-gradient(circle, rgba(212,165,116,0.18) 0%, transparent 70%);
-      animation: floatBob 8s ease-in-out infinite;
+      width:500px; height:500px; top:-100px; right:-100px;
+      background:radial-gradient(circle,rgba(212,165,116,.18) 0%,transparent 70%);
+      animation:floatBob 8s ease-in-out infinite;
     }
     .hero-blob-2 {
-      width: 300px; height: 300px;
-      bottom: 0; left: -60px;
-      background: radial-gradient(circle, rgba(111,78,55,0.1) 0%, transparent 70%);
-      animation: floatBob 10s ease-in-out infinite reverse;
+      width:300px; height:300px; bottom:0; left:-60px;
+      background:radial-gradient(circle,rgba(111,78,55,.1) 0%,transparent 70%);
+      animation:floatBob 10s ease-in-out infinite reverse;
     }
-
-    /* ── Hero ornament ring ── */
     .hero-ornament {
-      position: absolute;
-      bottom: 8%;
-      right: 8%;
-      width: 120px;
-      height: 120px;
-      border: 1px solid rgba(212,165,116,0.3);
-      border-radius: 50%;
-      animation: rotateSlow 20s linear infinite;
-      pointer-events: none;
+      position:absolute; bottom:8%; right:8%;
+      width:120px; height:120px;
+      border:1px solid rgba(212,165,116,.3); border-radius:50%;
+      animation:rotateSlow 20s linear infinite; pointer-events:none;
     }
     .hero-ornament::after {
-      content: '';
-      position: absolute;
-      inset: 12px;
-      border: 1px dashed rgba(212,165,116,0.2);
-      border-radius: 50%;
+      content:''; position:absolute; inset:12px;
+      border:1px dashed rgba(212,165,116,.2); border-radius:50%;
     }
-
-    /* ── Hero tagline accent line ── */
-    .hero-accent-line {
-      width: 0;
-      height: 1px;
-      background: var(--accent-gold);
-      margin: 0 auto 2rem;
-      animation: lineDraw 1.2s ease 0.8s forwards;
+    .hero-content { max-width:1200px; text-align:center; position:relative; z-index:1; }
+    .hero h1 {
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:5.5rem; font-weight:300; color:var(--coffee-dark);
+      margin-bottom:1.5rem; letter-spacing:-1px; line-height:1.1;
+      animation:fadeInUp 1s ease .1s forwards; opacity:0;
     }
-
-    /* ── Section heading underline draw ── */
-    .section-title {
-      position: relative;
-      display: inline-block;
-    }
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: var(--accent-gold);
-      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
-    }
-    .section-title.visible::after {
-      width: 60px;
-    }
-
-    /* ── Menu category hover refined ── */
-    .menu-category {
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.4s ease;
-    }
-
-    /* ── Location item ── */
-    .location-item {
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .location-item:hover {
-      transform: translateY(-6px);
-    }
-
-    /* ── About image float on hover ── */
-    .about-image img {
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .about-image:hover img {
-      transform: scale(1.03);
-    }
-
-    /* ── CTA button pulse after load ── */
-    @keyframes subtlePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(44,24,16,0); }
-      50%       { box-shadow: 0 0 0 8px rgba(44,24,16,0.08); }
-    }
+    .hero h1 strong { font-weight:700; display:block; color:var(--coffee-medium); }
+    .hero-accent-line { width:0; height:1px; background:var(--accent-gold); margin:0 auto 2rem; animation:lineDraw 1.2s ease .8s forwards; }
+    .hero p { font-size:1.2rem; color:var(--coffee-medium); max-width:600px; margin:0 auto 3rem; animation:fadeInUp 1s ease .35s both; }
     .cta-button {
-      animation: fadeInUp 1s ease 0.4s forwards,
-                 subtlePulse 3s ease 2s infinite;
+      display:inline-block; padding:1rem 3rem;
+      background:var(--coffee-dark); color:var(--white);
+      text-decoration:none; font-weight:500; font-size:1rem;
+      letter-spacing:1px; border-radius:2px;
+      transition:all .4s ease;
+      animation:fadeInUp 1s ease .55s forwards, subtlePulse 3s ease 2.5s infinite;
+      opacity:0; position:relative; overflow:hidden;
+      cursor:pointer; border:none; font-family:inherit;
     }
+    .cta-button::before {
+      content:''; position:absolute; top:0; left:-100%;
+      width:100%; height:100%; background:var(--coffee-medium);
+      transition:left .4s ease; z-index:-1;
+    }
+    .cta-button:hover::before { left:0; }
+    .section-title { position:relative; display:inline-block; }
+    .section-title::after {
+      content:''; position:absolute; bottom:-12px; left:50%;
+      transform:translateX(-50%); width:0; height:2px;
+      background:var(--accent-gold); transition:width 1s cubic-bezier(.22,1,.36,1) .3s;
+    }
+    .section-title.visible::after { width:60px; }
 
-    /* ── Scroll progress bar ── */
-    #scroll-progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent-gold), var(--coffee-medium));
-      width: 0%;
-      z-index: 9999;
-      transition: width 0.1s linear;
-    }
-
-    /* ── Nav link active state ── */
-    .nav-links a.active {
-      color: var(--coffee-dark);
-    }
-    .nav-links a.active::after {
-      width: 100%;
-    }
-
-    /* =================== ABOUT SECTION =================== */
-    .about {
-      padding: 8rem 3rem;
-      background: var(--white);
-    }
-
+    /* ── ABOUT ── */
+    .about { padding:8rem 3rem; background:var(--white); }
     .about-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
+      max-width:1200px; margin:0 auto;
+      display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center;
     }
-
-    .about-image {
-      position: relative;
-    }
-
+    .about-image { position:relative; overflow:hidden; }
     .about-image::before {
-      content: '';
-      position: absolute;
-      top: -20px;
-      left: -20px;
-      width: 100%;
-      height: 100%;
-      border: 2px solid var(--accent-gold);
-      z-index: -1;
+      content:''; position:absolute; top:-20px; left:-20px;
+      width:100%; height:100%; border:2px solid var(--accent-gold); z-index:-1;
     }
-
     .about-image img {
-      width: 100%;
-      height: 500px;
-      object-fit: cover;
-      display: block;
+      width:100%; height:500px; object-fit:cover; display:block;
+      transition:transform .6s cubic-bezier(.22,1,.36,1);
     }
-
+    .about-image:hover img { transform:scale(1.03); }
     .about-text h2 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 3.5rem;
-      font-weight: 300;
-      color: var(--coffee-dark);
-      margin-bottom: 2rem;
-      line-height: 1.2;
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:3.5rem; font-weight:300; color:var(--coffee-dark);
+      margin-bottom:2rem; line-height:1.2;
     }
+    .about-text p { font-size:1.1rem; color:var(--coffee-medium); margin-bottom:1.5rem; line-height:1.8; }
 
-    .about-text p {
-      font-size: 1.1rem;
-      color: var(--coffee-medium);
-      margin-bottom: 1.5rem;
-      line-height: 1.8;
-    }
-
-    /* =================== MENU SECTION =================== */
-    .menu {
-      padding: 8rem 3rem;
-      background: var(--cream);
-    }
-
-    .menu-header {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 5rem;
-    }
-
-    .menu-header h2 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 4rem;
-      font-weight: 300;
-      color: var(--coffee-dark);
-      margin-bottom: 1rem;
-    }
-
-    .menu-header p {
-      font-size: 1.1rem;
-      color: var(--coffee-medium);
-    }
-
-    .menu-grid {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 4rem;
-    }
-
-    .menu-category {
-      background: var(--white);
-      padding: 3rem;
-      border-radius: 2px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .menu-category:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 40px rgba(44, 24, 16, 0.08);
-    }
-
-    .menu-category h3 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: var(--coffee-dark);
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .menu-category h3::before {
-      content: '';
-      width: 40px;
-      height: 2px;
-      background: var(--accent-gold);
-    }
-
-    .menu-item {
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(44, 24, 16, 0.1);
-    }
-
-    .menu-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .menu-item h4 {
-      font-size: 1.2rem;
-      font-weight: 500;
-      color: var(--coffee-dark);
-      margin-bottom: 0.5rem;
-    }
-
-    .menu-item p {
-      font-size: 0.95rem;
-      color: var(--coffee-medium);
-      font-style: italic;
-    }
-
-    /* =================== LOCATION SECTION =================== */
-    .location {
-      padding: 8rem 3rem;
-      background: var(--white);
-    }
-
-    .location-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .location h2 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 4rem;
-      font-weight: 300;
-      color: var(--coffee-dark);
-      margin-bottom: 3rem;
-    }
-
-    .location-details {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3rem;
-      margin-bottom: 3rem;
-    }
-
-    .location-item {
-      padding: 2rem;
-    }
-
-    .location-item h3 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--coffee-dark);
-      margin-bottom: 1rem;
-    }
-
-    .location-item p {
-      font-size: 1rem;
-      color: var(--coffee-medium);
-      line-height: 1.8;
-    }
-
-    /* =================== FOOTER =================== */
-    footer {
-      background: var(--coffee-dark);
-      color: var(--cream);
-      padding: 4rem 3rem 2rem;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .footer-logo {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: var(--cream);
-    }
-
-    .footer-text {
-      font-size: 0.95rem;
-      color: rgba(245, 241, 237, 0.7);
-      margin-bottom: 2rem;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .social-links a {
-      color: var(--cream);
-      font-size: 1.5rem;
-      transition: color 0.3s ease;
-    }
-
-    .social-links a:hover {
-      color: var(--accent-gold);
-    }
-
-    .footer-divider {
-      width: 100%;
-      height: 1px;
-      background: rgba(245, 241, 237, 0.2);
-      margin: 2rem 0;
-    }
-
-    .powered-by {
-      font-size: 0.85rem;
-      color: rgba(245, 241, 237, 0.6);
-      margin-bottom: 1rem;
-    }
-
-    .powered-by a {
-      color: rgba(245, 241, 237, 0.8);
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .powered-by a:hover {
-      color: var(--cream);
-    }
-
-    .powered-by img {
-      height: 18px;
-      width: auto;
-      vertical-align: middle;
-      margin-left: 6px;
-      opacity: 0.9;
-    }
-
-    .copyright {
-      font-size: 0.85rem;
-      color: rgba(245, 241, 237, 0.5);
-    }
-
-    /* =================== RESPONSIVE DESIGN =================== */
-    @media (max-width: 1024px) {
-      .hero h1 {
-        font-size: 4rem;
-      }
-
-      .about-container {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-      }
-
-      .about-image::before {
-        display: none;
-      }
-
-      .menu-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .location-details {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      nav {
-        padding: 1.5rem 1.5rem;
-      }
-
-      .nav-links {
-        position: fixed;
-        top: 70px;
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - 70px);
-        background: var(--cream);
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 3rem 0;
-        transition: left 0.3s ease;
-        gap: 2rem;
-      }
-
-      .nav-links.active {
-        left: 0;
-      }
-
-      .menu-toggle {
-        display: flex;
-      }
-
-      .hero {
-        padding: 6rem 1.5rem 3rem;
-      }
-
-      .hero h1 {
-        font-size: 3rem;
-      }
-
-      .hero p {
-        font-size: 1rem;
-      }
-
-      .about {
-        padding: 4rem 1.5rem;
-      }
-
-      .about-text h2 {
-        font-size: 2.5rem;
-      }
-
-      .menu {
-        padding: 4rem 1.5rem;
-      }
-
-      .menu-header h2 {
-        font-size: 2.5rem;
-      }
-
-      .menu-category {
-        padding: 2rem;
-      }
-
-      .location {
-        padding: 4rem 1.5rem;
-      }
-
-      .location h2 {
-        font-size: 2.5rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .about-text h2,
-      .menu-header h2,
-      .location h2 {
-        font-size: 2rem;
-      }
-    }
-    /* =================== CUSTOMER FAVORITES SECTION =================== */
-    .favorites {
-      padding: 8rem 3rem;
-      background: var(--cream);
-    }
-
-    .favorites-header {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 5rem;
-    }
-
+    /* ── CUSTOMER FAVORITES ── */
+    .favorites { padding:8rem 3rem; background:var(--cream); }
+    .favorites-header { text-align:center; max-width:700px; margin:0 auto 5rem; }
     .favorites-header h2 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 4rem;
-      font-weight: 300;
-      color: var(--coffee-dark);
-      margin-bottom: 1rem;
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:4rem; font-weight:300; color:var(--coffee-dark); margin-bottom:1rem;
     }
-
-    .favorites-header p {
-      font-size: 1.1rem;
-      color: var(--coffee-medium);
-    }
-
-    .favorites-grid {
-      max-width: 1300px;
-      margin: 0 auto;
-    }
-
-    .favorites-row {
-      display: grid;
-      gap: 3rem;
-      margin-bottom: 5rem;
-    }
-
-    .favorites-row.drinks-row {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .favorites-row.snacks-row {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
+    .favorites-header p { font-size:1.1rem; color:var(--coffee-medium); }
+    .favorites-grid { max-width:1300px; margin:0 auto; }
+    .favorites-row { display:grid; gap:3rem; margin-bottom:5rem; }
+    .favorites-row.drinks-row, .favorites-row.snacks-row { grid-template-columns:repeat(3,1fr); }
     .favorites-category-label {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--coffee-medium);
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      text-align: center;
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:1.4rem; font-weight:600; color:var(--coffee-medium);
+      text-transform:uppercase; letter-spacing:3px; text-align:center;
+      margin-bottom:2rem; display:flex; align-items:center; justify-content:center; gap:1.5rem;
     }
-
     .favorites-category-label::before,
-    .favorites-category-label::after {
-      content: '';
-      width: 60px;
-      height: 1px;
-      background: var(--accent-gold);
-    }
-
+    .favorites-category-label::after { content:''; width:60px; height:1px; background:var(--accent-gold); }
     .fav-card {
-      background: var(--white);
-      border-radius: 4px;
-      overflow: visible;
-      position: relative;
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.4s ease;
+      background:var(--white); border-radius:4px; overflow:visible; position:relative;
+      transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
     }
-
-    .fav-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 50px rgba(44, 24, 16, 0.12);
-    }
-
+    .fav-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(44,24,16,.12); }
     .fav-card-img {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      display: block;
+      width:100%; aspect-ratio:4/3; object-fit:cover; display:block;
+      border-radius:4px 4px 0 0;
+      background:linear-gradient(135deg,#e8ddd4,#d4c4b0);
+      min-height:180px;
     }
-
-    .fav-card-body {
-      padding: 1.8rem 2rem 2rem;
-    }
-
+    .fav-card-body { padding:1.8rem 2rem 2rem; }
     .fav-card-name {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: var(--coffee-dark);
-      margin-bottom: 0.4rem;
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:1.6rem; font-weight:600; color:var(--coffee-dark); margin-bottom:.4rem;
     }
-
-    .fav-card-desc {
-      font-size: 0.9rem;
-      color: var(--coffee-medium);
-      font-style: italic;
-      margin-bottom: 1rem;
-    }
-
-    .fav-card-price {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--accent-gold);
-    }
-
-    /* ── Customer compliment bubble ── */
+    .fav-card-desc { font-size:.9rem; color:var(--coffee-medium); font-style:italic; margin-bottom:1rem; }
+    .fav-card-price { font-size:1rem; font-weight:600; color:var(--accent-gold); }
     .compliment-bubble {
-      position: absolute;
-      top: -22px;
-      right: 20px;
-      background: var(--coffee-dark);
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-style: italic;
-      line-height: 1.5;
-      padding: 0.65rem 1rem;
-      border-radius: 14px 14px 14px 0;
-      max-width: 200px;
-      z-index: 10;
-      box-shadow: 0 4px 16px rgba(44,24,16,0.18);
-      opacity: 0;
-      transform: translateY(6px) scale(0.95);
-      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1);
-      pointer-events: none;
+      position:absolute; top:-22px; right:20px;
+      background:var(--coffee-dark); color:var(--cream);
+      font-size:.82rem; font-style:italic; line-height:1.5;
+      padding:.65rem 1rem; border-radius:14px 14px 14px 0;
+      max-width:200px; z-index:10;
+      box-shadow:0 4px 16px rgba(44,24,16,.18);
+      opacity:0; transform:translateY(6px) scale(.95);
+      transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1);
+      pointer-events:none;
     }
-
-    .compliment-bubble::before {
-      content: '"';
-      font-size: 1.1rem;
-      color: var(--accent-gold);
-      margin-right: 2px;
-    }
-
-    .compliment-bubble::after {
-      content: '"';
-      font-size: 1.1rem;
-      color: var(--accent-gold);
-      margin-left: 2px;
-    }
-
-    .fav-card:hover .compliment-bubble {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* star badge */
+    .compliment-bubble::before { content:'"'; font-size:1.1rem; color:var(--accent-gold); margin-right:2px; }
+    .compliment-bubble::after  { content:'"'; font-size:1.1rem; color:var(--accent-gold); margin-left:2px; }
+    .fav-card:hover .compliment-bubble { opacity:1; transform:translateY(0) scale(1); }
     .fav-star-badge {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: var(--accent-gold);
-      color: var(--coffee-dark);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 0.3rem 0.75rem;
-      border-radius: 2px;
+      position:absolute; top:14px; left:14px;
+      background:var(--accent-gold); color:var(--coffee-dark);
+      font-size:.72rem; font-weight:700; letter-spacing:1px;
+      text-transform:uppercase; padding:.3rem .75rem; border-radius:2px;
     }
 
-    @media (max-width: 1024px) {
-      .favorites-row.drinks-row,
-      .favorites-row.snacks-row {
-        grid-template-columns: repeat(2, 1fr);
+    /* ── FULL MENU ── */
+    .menu { padding:8rem 3rem; background:linear-gradient(to bottom,#eee9e3,var(--cream)); }
+    .menu-header { text-align:center; max-width:700px; margin:0 auto 5rem; }
+    .menu-header h2 {
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:4rem; font-weight:300; color:var(--coffee-dark); margin-bottom:1rem;
+    }
+    .menu-header p { font-size:1.1rem; color:var(--coffee-medium); }
+    .menu-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:4rem; }
+    .menu-category {
+      background:var(--white); padding:3rem; border-radius:2px;
+      transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+    }
+    .menu-category:hover { transform:translateY(-5px); box-shadow:0 10px 40px rgba(44,24,16,.08); }
+    .menu-category h3 {
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:2.2rem; font-weight:600; color:var(--coffee-dark);
+      margin-bottom:2rem; display:flex; align-items:center; gap:1rem;
+    }
+    .menu-category h3::before { content:''; width:40px; height:2px; background:var(--accent-gold); flex-shrink:0; }
+    .menu-item {
+      margin-bottom:1.5rem; padding-bottom:1.5rem;
+      border-bottom:1px solid rgba(44,24,16,.1);
+      transition:transform .3s cubic-bezier(.22,1,.36,1);
+    }
+    .menu-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .menu-item h4 { font-size:1.2rem; font-weight:500; color:var(--coffee-dark); margin-bottom:.5rem; }
+    .menu-item p  { font-size:.95rem; color:var(--coffee-medium); font-style:italic; }
+    .menu-item:hover { transform:translateX(6px); }
+
+    /* ── LOCATION ── */
+    .location { padding:8rem 3rem; background:var(--white); }
+    .location-container { max-width:1200px; margin:0 auto; text-align:center; }
+    .location h2 {
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:4rem; font-weight:300; color:var(--coffee-dark); margin-bottom:3rem;
+    }
+    .location-details { display:grid; grid-template-columns:repeat(3,1fr); gap:3rem; margin-bottom:3rem; }
+    .location-item { padding:2rem; transition:transform .4s cubic-bezier(.22,1,.36,1); }
+    .location-item:hover { transform:translateY(-6px); }
+    .location-item h3 {
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:1.5rem; font-weight:600; color:var(--coffee-dark); margin-bottom:1rem;
+    }
+    .location-item p { font-size:1rem; color:var(--coffee-medium); line-height:1.8; }
+
+    /* ── FOOTER ── */
+    footer { background:var(--coffee-dark); color:var(--cream); padding:4rem 3rem 2rem; }
+    .footer-content { max-width:1200px; margin:0 auto; text-align:center; }
+    .footer-logo {
+      font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+      font-size:2rem; font-weight:600; margin-bottom:1rem; color:var(--cream);
+    }
+    .footer-text { font-size:.95rem; color:rgba(245,241,237,.7); margin-bottom:2rem; }
+    .social-links { display:flex; justify-content:center; gap:2rem; margin-bottom:3rem; }
+    .social-links a { color:var(--cream); font-size:1.5rem; text-decoration:none; transition:color .3s ease; }
+    .social-links a:hover { color:var(--accent-gold); }
+    .footer-divider { width:100%; height:1px; background:rgba(245,241,237,.2); margin:2rem 0; }
+    .powered-by { font-size:.85rem; color:rgba(245,241,237,.6); margin-bottom:1rem; text-align:center; margin-top:1.5rem; }
+    .powered-by a { color:rgba(245,241,237,.8); text-decoration:none; transition:color .3s ease; }
+    .powered-by a:hover { color:var(--cream); }
+    .powered-by img { height:18px; width:auto; vertical-align:middle; margin-left:6px; opacity:.9; }
+    .copyright { font-size:.85rem; color:rgba(245,241,237,.5); }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .hero h1 { font-size:4rem; }
+      .about-container { grid-template-columns:1fr; gap:3rem; }
+      .about-image::before { display:none; }
+      .menu-grid { grid-template-columns:1fr; gap:2rem; }
+      .location-details { grid-template-columns:1fr; gap:2rem; }
+      .favorites-row.drinks-row, .favorites-row.snacks-row { grid-template-columns:repeat(2,1fr); }
+    }
+    @media(max-width:768px){
+      nav { padding:1.5rem; }
+      .nav-links {
+        position:fixed; top:70px; left:-100%;
+        width:100%; height:calc(100vh - 70px);
+        background:var(--cream); flex-direction:column;
+        align-items:center; justify-content:flex-start;
+        padding:3rem 0; transition:left .3s ease; gap:2rem;
       }
+      .nav-links.active { left:0; }
+      .menu-toggle { display:flex; }
+      .hero { padding:6rem 1.5rem 3rem; }
+      .hero h1 { font-size:3rem; }
+      .hero p  { font-size:1rem; }
+      .about,.menu,.location,.favorites { padding:4rem 1.5rem; }
+      .about-text h2,.menu-header h2,.favorites-header h2,.location h2 { font-size:2.5rem; }
+      .menu-category { padding:2rem; }
+      .favorites-row.drinks-row,.favorites-row.snacks-row { grid-template-columns:1fr; gap:2rem; }
     }
-
-    @media (max-width: 768px) {
-      .favorites {
-        padding: 4rem 1.5rem;
-      }
-
-      .favorites-header h2 {
-        font-size: 2.5rem;
-      }
-
-      .favorites-row.drinks-row,
-      .favorites-row.snacks-row {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
+    @media(max-width:480px){
+      .hero h1,.about-text h2,.menu-header h2,.favorites-header h2,.location h2 { font-size:2rem; }
     }
-
-    @media (max-width: 480px) {
-      .favorites-header h2 {
-        font-size: 2rem;
-      }
-    }
-
-    /* Fallback: ensure content shows even if IntersectionObserver is slow */
-    @media (prefers-reduced-motion: reduce) {
-      .reveal { opacity: 1 !important; transform: none !important; }
-    }
-
-
-
-
-    /* ╔══════════════════════════════════════════╗
-       ║  MILK POUR INTRO                         ║
-       ╚══════════════════════════════════════════╝ */
-
-    body.intro-active { overflow: hidden; }
-
-    #milk-intro {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      pointer-events: all;
-      background: #0d0502;
-    }
-
-    /* Canvas covers everything */
-    #milk-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-    }
-
-    /* Pour stream ribbon */
-    #milk-stream {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12px;
-      height: 0;
-      z-index: 4;
-      pointer-events: none;
-      border-radius: 0 0 6px 6px;
-      background: linear-gradient(
-        to bottom,
-        rgba(255,255,255,0)    0%,
-        rgba(255,252,248,0.95) 5%,
-        rgba(245,235,218,0.98) 50%,
-        rgba(225,205,175,0.85) 100%
-      );
-      animation: mStreamWobble 0.32s ease-in-out infinite alternate;
-    }
-
-    @keyframes mStreamWobble {
-      from { transform: translateX(calc(-50% - 1.5px)) scaleX(1);    }
-      to   { transform: translateX(calc(-50% + 1.5px)) scaleX(1.18); }
-    }
-
-    /* Drip teardrop */
-    #milk-drip {
-      position: absolute;
-      bottom: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18px; height: 22px;
-      border-radius: 50% 50% 58% 58% / 38% 38% 62% 62%;
-      background: radial-gradient(ellipse at 38% 30%, #ffffff, #e0c8a0);
-      animation: mDripPulse 0.42s ease-in-out infinite alternate;
-    }
-
-    @keyframes mDripPulse {
-      from { transform: translateX(-50%) scaleY(1)    scaleX(1);    }
-      to   { transform: translateX(-50%) scaleY(1.28) scaleX(0.88); }
-    }
-
-    /* Fade-dissolve exit */
-    #milk-intro {
-      transition: opacity 0s;
-    }
-    #milk-intro.dissolve {
-      transition: opacity 1.2s ease-in-out;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-
   </style>
-
 </head>
 <body class="intro-active">
 
-  <!-- ══ MILK POUR INTRO ══ -->
-  <div id="milk-intro">
-    <canvas id="milk-canvas"></canvas>
-    <div id="milk-stream"><div id="milk-drip"></div></div>
+<!-- ══ MILK POUR INTRO ══ -->
+<div id="milk-intro">
+  <canvas id="milk-canvas"></canvas>
+  <div id="milk-stream"></div>
+</div>
+
+<!-- Scroll progress bar -->
+<div id="scroll-progress"></div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <nav>
+    <div class="logo">[Your Café Name Here]</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#menu">Order Now</a></li>
+      <li><a href="#location">Visit Us</a></li>
+    </ul>
+    <div class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+</header>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="home">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-ornament"></div>
+  <div class="hero-content">
+    <h1><strong>[Your Tagline Goes Here]</strong></h1>
+    <div class="hero-accent-line"></div>
+    <p>Lorem ipsum sip amet, consectetur café adipiscing. Your story, your flavors, your hours — all in one place. Replace this line with what makes your business special.</p>
+    <a href="#menu" class="cta-button">VIEW MENU</a>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section class="about" id="about">
+  <div class="about-container">
+    <div class="about-image reveal from-left">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop" alt="Café Interior">
+    </div>
+    <div class="about-text reveal from-right">
+      <h2>[Your Brand Headline]</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Replace this with your café's origin story — where it started, who's behind it, what drives you.</p>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Use this paragraph to highlight your signature offerings — your best-sellers, your process, your quality promise.</p>
+      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Tell your customers where they can find you and how they can order — dine-in, delivery, or pickup.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CUSTOMER FAVORITES ══ -->
+<section class="favorites" id="menu">
+  <div class="favorites-header">
+    <h2 class="section-title reveal">Customer Favorites</h2>
+    <p class="reveal">The ones they keep coming back for — our most-loved drinks and snacks, straight from the hearts of our regulars.</p>
   </div>
 
+  <div class="favorites-grid">
 
+    <div class="favorites-category-label reveal">☕ Fan-Favorite Drinks</div>
 
-
-  <!-- Scroll progress bar -->
-  <div id="scroll-progress"></div>
-
-  <!-- Header -->
-  <header>
-    <nav>
-      <div class="logo">[Your Café Name Here]</div>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="menu.html">Order Now</a></li>
-        <li><a href="#location">Visit Us</a></li>
-      </ul>
-      <div class="menu-toggle" onclick="toggleMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
+    <div class="favorites-row drinks-row stagger">
+      <div class="fav-card reveal">
+        <span class="fav-star-badge">★ Best Seller</span>
+        <div class="compliment-bubble">This is my daily order — I can't start my day without it!</div>
+        <img src="drink1.png" alt="[Drink 1 Name]" class="fav-card-img">
+        <div class="fav-card-body">
+          <h3 class="fav-card-name">[Drink 1 Name]</h3>
+          <p class="fav-card-desc">[Short flavor description]</p>
+          <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400;color:var(--coffee-medium);font-size:.85rem;">Small / Large</span></p>
+        </div>
       </div>
-    </nav>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero" id="home">
-    <div class="hero-blob hero-blob-1"></div>
-    <div class="hero-blob hero-blob-2"></div>
-    <div class="hero-ornament"></div>
-    <div class="hero-content">
-      <h1>
-        <strong>[Your Tagline Goes Here]</strong>
-      </h1>
-      <div class="hero-accent-line"></div>
-      <p>
-        Lorem ipsum sip amet, consectetur café adipiscing. Your story, your flavors, your hours — all in one place. Replace this line with what makes your business special.
-      </p>
-      <a href="menu.html" class="cta-button">VIEW MENU</a>
-    </div>
-  </section>
-
-  <!-- About Section -->
-  <section class="about" id="about">
-    <div class="about-container">
-      <div class="about-image reveal from-left">
-        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop" alt="Café Interior">
+      <div class="fav-card reveal">
+        <span class="fav-star-badge">★ Top Rated</span>
+        <div class="compliment-bubble">Perfectly sweet and creamy — every sip is a treat!</div>
+        <img src="drink2.png" alt="[Drink 2 Name]" class="fav-card-img">
+        <div class="fav-card-body">
+          <h3 class="fav-card-name">[Drink 2 Name]</h3>
+          <p class="fav-card-desc">[Short flavor description]</p>
+          <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400;color:var(--coffee-medium);font-size:.85rem;">Small / Large</span></p>
+        </div>
       </div>
-      <div class="about-text reveal from-right">
-        <h2>[Your Brand Headline]</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Replace this with your café's origin story — where it started, who's behind it, what drives you.
-        </p>
-        <p>
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Use this paragraph to highlight your signature offerings — your best-sellers, your process, your quality promise.
-        </p>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Tell your customers where they can find you and how they can order — dine-in, delivery, or pickup.
-        </p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- Customer Favorites Section -->
-  <section class="favorites" id="menu">
-    <div class="favorites-header">
-      <h2 class="section-title reveal">Customer Favorites</h2>
-      <p class="reveal">The ones they keep coming back for — our most-loved drinks and snacks, straight from the hearts of our regulars.</p>
-    </div>
-
-    <div class="favorites-grid">
-
-      <!-- Drinks Row Label -->
-      <div class="favorites-category-label reveal">☕ Fan-Favorite Drinks</div>
-
-      <!-- Drinks Row -->
-      <div class="favorites-row drinks-row stagger">
-
-        <!-- Drink 1 -->
-        <div class="fav-card reveal">
-          <span class="fav-star-badge">★ Best Seller</span>
-          <div class="compliment-bubble">This is my daily order — I can't start my day without it!</div>
-          <img src="drink1.png" alt="[Drink 1 Name]" class="fav-card-img">
-          <div class="fav-card-body">
-            <h3 class="fav-card-name">[Drink 1 Name]</h3>
-            <p class="fav-card-desc">[Short flavor description]</p>
-            <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Small / Large</span></p>
-          </div>
-        </div>
-
-        <!-- Drink 2 -->
-        <div class="fav-card reveal">
-          <span class="fav-star-badge">★ Top Rated</span>
-          <div class="compliment-bubble">Perfectly sweet and creamy — every sip is a treat!</div>
-          <img src="drink2.png" alt="[Drink 2 Name]" class="fav-card-img">
-          <div class="fav-card-body">
-            <h3 class="fav-card-name">[Drink 2 Name]</h3>
-            <p class="fav-card-desc">[Short flavor description]</p>
-            <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Small / Large</span></p>
-          </div>
-        </div>
-
-        <!-- Drink 3 -->
-        <div class="fav-card reveal">
-          <span class="fav-star-badge">★ Must Try</span>
-          <div class="compliment-bubble">So refreshing! My whole barkada orders this every visit.</div>
-          <img src="drink3.png" alt="[Drink 3 Name]" class="fav-card-img">
-          <div class="fav-card-body">
-            <h3 class="fav-card-name">[Drink 3 Name]</h3>
-            <p class="fav-card-desc">[Short flavor description]</p>
-            <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Small / Large</span></p>
-          </div>
-        </div>
-
-      </div><!-- /.drinks-row -->
-
-      <!-- Snacks Row Label -->
-      <div class="favorites-category-label reveal">🍟 Fan-Favorite Snacks</div>
-
-      <!-- Snacks Row -->
-      <div class="favorites-row snacks-row stagger">
-
-        <!-- Snack 1 -->
-        <div class="fav-card reveal">
-          <span class="fav-star-badge">★ Best Seller</span>
-          <div class="compliment-bubble">Crispy outside, soft inside — pairs perfectly with any drink!</div>
-          <img src="snack1.png" alt="[Snack 1 Name]" class="fav-card-img">
-          <div class="fav-card-body">
-            <h3 class="fav-card-name">[Snack 1 Name]</h3>
-            <p class="fav-card-desc">[Short description]</p>
-            <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Regular</span></p>
-          </div>
-        </div>
-
-        <!-- Snack 2 -->
-        <div class="fav-card reveal">
-          <span class="fav-star-badge">★ Top Rated</span>
-          <div class="compliment-bubble">Cheesy and addicting — I always order an extra serving!</div>
-          <img src="snack2.png" alt="[Snack 2 Name]" class="fav-card-img">
-          <div class="fav-card-body">
-            <h3 class="fav-card-name">[Snack 2 Name]</h3>
-            <p class="fav-card-desc">[Short description]</p>
-            <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Regular</span></p>
-          </div>
-        </div>
-
-        <!-- Snack 3 -->
-        <div class="fav-card reveal">
-          <span class="fav-star-badge">★ Must Try</span>
-          <div class="compliment-bubble">The crunch is unreal. Best snack on the menu, hands down!</div>
-          <img src="snack3.png" alt="[Snack 3 Name]" class="fav-card-img">
-          <div class="fav-card-body">
-            <h3 class="fav-card-name">[Snack 3 Name]</h3>
-            <p class="fav-card-desc">[Short description]</p>
-            <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400; color:var(--coffee-medium); font-size:0.85rem;">Regular</span></p>
-          </div>
-        </div>
-
-      </div><!-- /.snacks-row -->
-
-      <!-- CTA to full menu -->
-      <div style="text-align:center; margin-top:1rem;" class="reveal">
-        <a href="menu.html" class="cta-button" style="opacity:1; animation:none;">SEE FULL MENU</a>
-      </div>
-
-    </div><!-- /.favorites-grid -->
-  </section>
-
-  <!-- Location Section -->
-  <section class="location" id="location">
-    <div class="location-container">
-      <h2 class="section-title reveal">Visit Us</h2>
-      
-      <div class="location-details stagger">
-        <div class="location-item reveal scale-up">
-          <h3>Location</h3>
-          <p>
-            [Street / Block / Lot Number]<br>
-            [Subdivision or Building Name]<br>
-            [Barangay, City, Province]
-          </p>
-          <p style="margin-top: 1rem; font-size: 0.9rem;">
-            📍 Pin: [Google Maps Pin Name]
-          </p>
-        </div>
-
-        <div class="location-item reveal scale-up">
-          <h3>Hours</h3>
-          <p>
-            <strong>[OPEN DAYS]</strong><br>
-            [Opening Time] – [Closing Time]
-          </p>
-          <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--tea-green);">
-            Dine-in and walk-ins are welcome!
-          </p>
-        </div>
-
-        <div class="location-item reveal scale-up">
-          <h3>Order Online</h3>
-          <p>
-            We deliver to [Area Name]<br>
-            &amp; nearby locations
-          </p>
-          <p style="margin-top: 1rem;">
-            <strong>Available on:</strong><br>
-            🚴 [Delivery Platform 1]<br>
-            🚗 [Delivery Platform 2]
-          </p>
+      <div class="fav-card reveal">
+        <span class="fav-star-badge">★ Must Try</span>
+        <div class="compliment-bubble">So refreshing! My whole barkada orders this every visit.</div>
+        <img src="drink3.png" alt="[Drink 3 Name]" class="fav-card-img">
+        <div class="fav-card-body">
+          <h3 class="fav-card-name">[Drink 3 Name]</h3>
+          <p class="fav-card-desc">[Short flavor description]</p>
+          <p class="fav-card-price">₱XX / ₱XX &nbsp;<span style="font-weight:400;color:var(--coffee-medium);font-size:.85rem;">Small / Large</span></p>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <div class="footer-logo">[Your Café Name Here]</div>
-      <p class="footer-text">Lorem ipsum serving amet — crafted with care since [Year]</p>
+    <div class="favorites-category-label reveal">🍟 Fan-Favorite Snacks</div>
 
-      <div class="social-links">
-        <a href="#" target="_blank" aria-label="Facebook">📘</a>
-        <a href="#" target="_blank" aria-label="Instagram">📷</a>
+    <div class="favorites-row snacks-row stagger">
+      <div class="fav-card reveal">
+        <span class="fav-star-badge">★ Best Seller</span>
+        <div class="compliment-bubble">Crispy outside, soft inside — pairs perfectly with any drink!</div>
+        <img src="snack1.png" alt="[Snack 1 Name]" class="fav-card-img">
+        <div class="fav-card-body">
+          <h3 class="fav-card-name">[Snack 1 Name]</h3>
+          <p class="fav-card-desc">[Short description]</p>
+          <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400;color:var(--coffee-medium);font-size:.85rem;">Regular</span></p>
+        </div>
       </div>
-
-      <div class="footer-divider"></div>
-
-      <p class="copyright">&copy; 2026 [Your Café Name Here]. All rights reserved.</p>
+      <div class="fav-card reveal">
+        <span class="fav-star-badge">★ Top Rated</span>
+        <div class="compliment-bubble">Cheesy and addicting — I always order an extra serving!</div>
+        <img src="snack2.png" alt="[Snack 2 Name]" class="fav-card-img">
+        <div class="fav-card-body">
+          <h3 class="fav-card-name">[Snack 2 Name]</h3>
+          <p class="fav-card-desc">[Short description]</p>
+          <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400;color:var(--coffee-medium);font-size:.85rem;">Regular</span></p>
+        </div>
+      </div>
+      <div class="fav-card reveal">
+        <span class="fav-star-badge">★ Must Try</span>
+        <div class="compliment-bubble">The crunch is unreal. Best snack on the menu, hands down!</div>
+        <img src="snack3.png" alt="[Snack 3 Name]" class="fav-card-img">
+        <div class="fav-card-body">
+          <h3 class="fav-card-name">[Snack 3 Name]</h3>
+          <p class="fav-card-desc">[Short description]</p>
+          <p class="fav-card-price">₱XX &nbsp;<span style="font-weight:400;color:var(--coffee-medium);font-size:.85rem;">Regular</span></p>
+        </div>
+      </div>
     </div>
 
-    <p class="powered-by">
-      Powered by <a href="https://nexgenixcreativesolutions.github.io" target="_blank"><img src="ngcs.png" alt="NGCS Logo"> NexGenix Creative Solutions</a>
-    </p>
-  </footer>
+    <div style="text-align:center;margin-top:1rem;" class="reveal">
+      <a href="menu.html" class="cta-button" style="opacity:1;animation:none;">SEE FULL MENU</a>
+    </div>
 
-  <script>
-    /* ─────────────────────────────────────────
-       MOBILE MENU
-    ───────────────────────────────────────── */
-    function toggleMenu() {
-      const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('active');
+  </div>
+</section>
+
+<!-- ══ FULL MENU ══ -->
+<section class="menu" id="full-menu">
+  <div class="menu-header">
+    <h2 class="section-title reveal">Our Menu</h2>
+    <p class="reveal">Crafted with intention — every item made to order.</p>
+  </div>
+  <div class="menu-grid">
+    <div class="menu-category reveal">
+      <h3>Hot Drinks</h3>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[e.g. double shot espresso, light foam]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+    </div>
+    <div class="menu-category reveal">
+      <h3>Cold Drinks</h3>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+    </div>
+    <div class="menu-category reveal">
+      <h3>Snacks</h3>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+    </div>
+    <div class="menu-category reveal">
+      <h3>Add-Ons</h3>
+      <div class="menu-item"><h4>Extra Shot<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>Oat Milk Upgrade<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+      <div class="menu-item"><h4>[Item Name]<span style="float:right;color:var(--accent-gold)">₱XX</span></h4><p>[Description]</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LOCATION ══ -->
+<section class="location" id="location">
+  <div class="location-container">
+    <h2 class="section-title reveal">Visit Us</h2>
+    <div class="location-details stagger">
+      <div class="location-item reveal scale-up">
+        <h3>Location</h3>
+        <p>[Street / Block / Lot Number]<br>[Subdivision or Building Name]<br>[Barangay, City, Province]</p>
+        <p style="margin-top:1rem;font-size:.9rem;">📍 Pin: [Google Maps Pin Name]</p>
+      </div>
+      <div class="location-item reveal scale-up">
+        <h3>Hours</h3>
+        <p><strong>[OPEN DAYS]</strong><br>[Opening Time] – [Closing Time]</p>
+        <p style="margin-top:1rem;font-size:.9rem;color:var(--tea-green);">Dine-in and walk-ins are welcome!</p>
+      </div>
+      <div class="location-item reveal scale-up">
+        <h3>Order Online</h3>
+        <p>We deliver to [Area Name]<br>&amp; nearby locations</p>
+        <p style="margin-top:1rem;"><strong>Available on:</strong><br>🚴 [Delivery Platform 1]<br>🚗 [Delivery Platform 2]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-logo">[Your Café Name Here]</div>
+    <p class="footer-text">Lorem ipsum serving amet — crafted with care since [Year]</p>
+    <div class="social-links">
+      <a href="#" target="_blank" aria-label="Facebook">📘</a>
+      <a href="#" target="_blank" aria-label="Instagram">📷</a>
+    </div>
+    <div class="footer-divider"></div>
+    <p class="copyright">&copy; 2026 [Your Café Name Here]. All rights reserved.</p>
+  </div>
+  <p class="powered-by">
+    Powered by <a href="https://nexgenixcreativesolutions.github.io" target="_blank">
+      <img src="ngcs.png" alt="NGCS Logo"> NexGenix Creative Solutions
+    </a>
+  </p>
+</footer>
+
+<script>
+  /* ── MOBILE MENU ── */
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('active');
+  }
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active'));
+  });
+
+  /* ── SMOOTH SCROLL ── */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); window.scrollTo({ top: target.offsetTop - 80, behavior:'smooth' }); }
+    });
+  });
+
+  /* ── SCROLL EVENTS ── */
+  const progressBar = document.getElementById('scroll-progress');
+  const header      = document.querySelector('header');
+  const heroSection = document.querySelector('.hero');
+  const heroBlob1   = document.querySelector('.hero-blob-1');
+  const heroBlob2   = document.querySelector('.hero-blob-2');
+  const sections    = document.querySelectorAll('section[id]');
+  const navAnchors  = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.pageYOffset;
+    const docH    = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (scrollY / docH * 100) + '%';
+    header.style.boxShadow  = scrollY > 100 ? '0 2px 20px rgba(44,24,16,.12)' : 'none';
+    if (heroSection && scrollY < heroSection.offsetHeight) {
+      heroBlob1 && (heroBlob1.style.transform = `translateY(${scrollY*.25}px)`);
+      heroBlob2 && (heroBlob2.style.transform = `translateY(${scrollY*-.15}px)`);
     }
-
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.getElementById('navLinks').classList.remove('active');
-      });
+    let current = '';
+    sections.forEach(sec => { if (scrollY >= sec.offsetTop - 120) current = sec.getAttribute('id'); });
+    navAnchors.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
     });
+  }, { passive:true });
 
-    /* ─────────────────────────────────────────
-       SMOOTH SCROLL WITH HEADER OFFSET
-    ───────────────────────────────────────── */
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
-        }
-      });
+  /* ── SCROLL REVEALS ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); }
     });
+  }, { threshold:0, rootMargin:'0px 0px 0px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight + 100) el.classList.add('visible');
+    });
+  });
 
-    /* ─────────────────────────────────────────
-       SCROLL PROGRESS BAR
-    ───────────────────────────────────────── */
-    const progressBar = document.getElementById('scroll-progress');
-
-    /* ─────────────────────────────────────────
-       HEADER SHADOW + ACTIVE NAV + PARALLAX
-    ───────────────────────────────────────── */
-    const header = document.querySelector('header');
-    const heroSection = document.querySelector('.hero');
-    const heroBlob1  = document.querySelector('.hero-blob-1');
-    const heroBlob2  = document.querySelector('.hero-blob-2');
-    const sections   = document.querySelectorAll('section[id]');
-    const navLinks   = document.querySelectorAll('.nav-links a');
-
-    window.addEventListener('scroll', () => {
-      const scrollY = window.pageYOffset;
-      const docH    = document.documentElement.scrollHeight - window.innerHeight;
-
-      // Progress bar
-      progressBar.style.width = (scrollY / docH * 100) + '%';
-
-      // Header shadow
-      header.style.boxShadow = scrollY > 100
-        ? '0 2px 20px rgba(44,24,16,0.12)'
-        : 'none';
-
-      // Parallax on hero blobs
-      if (heroSection) {
-        const heroH = heroSection.offsetHeight;
-        if (scrollY < heroH) {
-          const pct = scrollY / heroH;
-          heroBlob1 && (heroBlob1.style.transform = `translateY(${scrollY * 0.25}px)`);
-          heroBlob2 && (heroBlob2.style.transform = `translateY(${scrollY * -0.15}px)`);
-        }
+  /* ── MENU STAGGER ── */
+  const menuObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const grid  = entry.target.closest('.menu-grid');
+        const items = grid ? Array.from(grid.querySelectorAll('.menu-category')) : [];
+        const idx   = items.indexOf(entry.target);
+        entry.target.style.transitionDelay = (Math.floor(idx/2)*.08 + (idx%2)*.14) + 's';
+        entry.target.classList.add('visible');
+        menuObserver.unobserve(entry.target);
       }
-
-      // Active nav link
-      let current = '';
-      sections.forEach(sec => {
-        if (scrollY >= sec.offsetTop - 120) current = sec.getAttribute('id');
-      });
-      navLinks.forEach(a => {
-        a.classList.remove('active');
-        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
-      });
-    }, { passive: true });
-
-    /* ─────────────────────────────────────────
-       INTERSECTION OBSERVER — SCROLL REVEALS
-    ───────────────────────────────────────── */
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0,
-      rootMargin: '0px 0px 0px 0px'
     });
+  }, { threshold:.1, rootMargin:'0px 0px -30px 0px' });
+  document.querySelectorAll('.menu-category.reveal').forEach(el => menuObserver.observe(el));
 
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  /* ── HERO ENTRANCE ── */
+  (function() {
+    const h1 = document.querySelector('.hero h1');
+    const hp = document.querySelector('.hero p');
+    const ct = document.querySelector('.cta-button');
+    if (h1) { h1.style.animationName='fadeInUp'; h1.style.animationDuration='1s'; h1.style.animationFillMode='forwards'; h1.style.animationDelay='.1s'; }
+    if (hp) hp.style.animationDelay='.35s';
+    if (ct) ct.style.animation='fadeInUp 1s ease .55s forwards, subtlePulse 3s ease 2.5s infinite';
+  })();
 
-    // Force-show any reveals already in viewport on load
-    window.addEventListener('load', () => {
-      document.querySelectorAll('.reveal').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight + 100) el.classList.add('visible');
-      });
-    });
+  /* ══════════════════════════════════════════
+     MILK POUR INTRO
+  ══════════════════════════════════════════ */
+  window.addEventListener('DOMContentLoaded', function() {
+    var intro  = document.getElementById('milk-intro');
+    var canvas = document.getElementById('milk-canvas');
+    var stream = document.getElementById('milk-stream');
+    if (!intro || !canvas) return;
 
-    /* ─────────────────────────────────────────
-       MENU CATEGORY ENTRANCE — STAGGER WITHIN
-       VIEWPORT (refined timing per row)
-    ───────────────────────────────────────── */
-    const menuObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const grid    = entry.target.closest('.menu-grid');
-          const items   = Array.from(grid.querySelectorAll('.menu-category'));
-          const idx     = items.indexOf(entry.target);
-          const rowDelay = (idx % 2) * 0.14;   // stagger per column
-          const rowIndex = Math.floor(idx / 2);
-          const baseDelay = rowIndex * 0.08;
+    var ctx = canvas.getContext('2d');
+    var W, H, CX, CY_POUR;
 
-          entry.target.style.transitionDelay = (baseDelay + rowDelay) + 's';
-          entry.target.classList.add('visible');
-          menuObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    function sizeCanvas() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      CX = W / 2; CY_POUR = H * 0.42;
+    }
+    function paintMask() {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = '#0f0603';
+      ctx.fillRect(0, 0, W, H);
+    }
+    sizeCanvas(); paintMask();
+    window.addEventListener('resize', function() { sizeCanvas(); paintMask(); });
 
-    document.querySelectorAll('.menu-category.reveal').forEach(el => menuObserver.observe(el));
+    var START = null, STREAM_MS = 1800, TOTAL_MS = 3800;
+    function easeOut4(t) { return 1 - Math.pow(1 - t, 4); }
 
-    /* ─────────────────────────────────────────
-       MENU ITEM HOVER — micro lift on items
-    ───────────────────────────────────────── */
-    document.querySelectorAll('.menu-item').forEach(item => {
-      item.addEventListener('mouseenter', () => {
-        item.style.transform = 'translateX(6px)';
-        item.style.transition = 'transform 0.3s cubic-bezier(0.22,1,0.36,1)';
-      });
-      item.addEventListener('mouseleave', () => {
-        item.style.transform = 'translateX(0)';
-      });
-    });
+    function draw(ts) {
+      if (!START) START = ts;
+      var elapsed = ts - START;
+      var totalP  = Math.min(elapsed / TOTAL_MS, 1);
 
-    /* ─────────────────────────────────────────
-       HERO ENTRANCE — stagger h1 words
-    ───────────────────────────────────────── */
-    (function animateHero() {
-      const h1    = document.querySelector('.hero h1');
-      const heroP = document.querySelector('.hero p');
-      const cta   = document.querySelector('.cta-button');
-      if (h1) {
-        h1.style.animationName    = 'fadeInUp';
-        h1.style.animationDuration = '1s';
-        h1.style.animationFillMode = 'forwards';
-        h1.style.animationDelay   = '0.1s';
-      }
-      if (heroP) heroP.style.animationDelay = '0.35s';
-      if (cta)   cta.style.animation = 'fadeInUp 1s ease 0.55s forwards, subtlePulse 3s ease 2.5s infinite';
-    })();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = '#0f0603';
+      ctx.fillRect(0, 0, W, H);
 
+      var sP = Math.min(elapsed / STREAM_MS, 1);
+      var tipY = easeOut4(sP) * CY_POUR;
+      stream.style.height = tipY + 'px';
 
-    /* ══ MILK POUR INTRO ══
-       Dark espresso screen. Milk pours from top-center.
-       Canvas paints expanding cream/white blobs from impact point.
-       As coverage fills, the dark overlay dissolves away.
-    */
-    window.addEventListener('DOMContentLoaded', function() {
+      var maxR = Math.sqrt(Math.pow(Math.max(CX,W-CX),2)+Math.pow(Math.max(CY_POUR,H-CY_POUR),2))+40;
+      var spreadDelay = STREAM_MS * 0.7;
+      var spreadP = Math.min(Math.max(0, elapsed - spreadDelay) / (TOTAL_MS - spreadDelay), 1);
+      var clearRadius = easeOut4(spreadP) * maxR;
 
-      var intro  = document.getElementById('milk-intro');
-      var canvas = document.getElementById('milk-canvas');
-      var stream = document.getElementById('milk-stream');
-      if (!intro || !canvas) return;
-
-      var ctx = canvas.getContext('2d');
-
-      /* ── Size canvas to full viewport ── */
-      var W = 0, H = 0, CX = 0;
-      function sizeCanvas() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-        CX = W / 2;
-      }
-      sizeCanvas();
-      window.addEventListener('resize', sizeCanvas);
-
-      /* ── Paint the initial dark espresso background ── */
-      function paintBg() {
-        ctx.fillStyle = '#0d0502';
-        ctx.fillRect(0, 0, W, H);
-      }
-      paintBg();
-
-      /* ── Timing ── */
-      var START      = null;
-      var STREAM_MS  = 2000;   /* stream grows for 2s */
-      var POUR_MS    = 4200;   /* total pour lasts 4.2s */
-      var streamTipY = 0;
-
-      /* ── Blob pool ── */
-      var blobs = [];
-
-      function spawnBlobs(x, y, count) {
-        for (var i = 0; i < count; i++) {
-          var angle = Math.random() * Math.PI * 2;
-          var spd   = 0.4 + Math.random() * 2.0;
-          blobs.push({
-            x:      x + (Math.random() - 0.5) * 30,
-            y:      y + (Math.random() - 0.5) * 15,
-            vx:     Math.cos(angle) * spd,
-            vy:     Math.sin(angle) * spd * 0.5,
-            r:      12 + Math.random() * 30,
-            maxR:   60 + Math.random() * 160,
-            alpha:  0.45 + Math.random() * 0.45,
-            warm:   Math.random() > 0.55,
-            age:    0,
-            maxAge: 80 + Math.floor(Math.random() * 70)
+      if (clearRadius > 0) {
+        ctx.globalCompositeOperation = 'destination-out';
+        var g1 = ctx.createRadialGradient(CX,CY_POUR,0,CX,CY_POUR,clearRadius);
+        g1.addColorStop(0,'rgba(0,0,0,1)'); g1.addColorStop(.55,'rgba(0,0,0,1)');
+        g1.addColorStop(.78,'rgba(0,0,0,.85)'); g1.addColorStop(.90,'rgba(0,0,0,.5)');
+        g1.addColorStop(.97,'rgba(0,0,0,.15)'); g1.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(CX,CY_POUR,clearRadius,0,Math.PI*2);
+        ctx.fillStyle=g1; ctx.fill();
+        if (clearRadius > 30) {
+          var w = clearRadius*.06;
+          [[-w*1.2,w*.6,.82],[w*.8,-w*1.1,.75],[-w*.5,-w*.8,.70],[w*1.3,w*.4,.68],[-w*.9,w*1.2,.65]].forEach(function(o,k){
+            var r2=clearRadius*(.88+k*.02);
+            var g2=ctx.createRadialGradient(CX+o[0],CY_POUR+o[1],0,CX+o[0],CY_POUR+o[1],r2);
+            g2.addColorStop(0,'rgba(0,0,0,'+o[2]+')'); g2.addColorStop(.6,'rgba(0,0,0,'+(o[2]*.5)+')'); g2.addColorStop(1,'rgba(0,0,0,0)');
+            ctx.beginPath(); ctx.arc(CX+o[0],CY_POUR+o[1],r2,0,Math.PI*2); ctx.fillStyle=g2; ctx.fill();
           });
-        }
-      }
-
-      /* ── Ease functions ── */
-      function easeOut3(t) { return 1 - Math.pow(1 - t, 3); }
-      function easeInOut2(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
-
-      /* ── Draw loop ── */
-      function draw(ts) {
-        if (!START) START = ts;
-        var elapsed = ts - START;
-        var pourP   = Math.min(elapsed / POUR_MS, 1);
-
-        /* Dark semi-transparent fill each frame = trails & fading old blobs */
-        ctx.fillStyle = 'rgba(13,5,2,0.15)';
-        ctx.fillRect(0, 0, W, H);
-
-        /* Grow stream downward */
-        var sP     = Math.min(elapsed / STREAM_MS, 1);
-        streamTipY = easeOut3(sP) * H * 0.6;
-        stream.style.height = streamTipY + 'px';
-
-        /* Spawn blobs at impact point — more as pour progresses */
-        if (elapsed > 80) {
-          var rate = 2 + Math.floor(pourP * 6);
-          spawnBlobs(CX, streamTipY, rate);
-        }
-
-        /* Rising tendrils (milk swirling upward through the coffee) */
-        if (elapsed > 300 && Math.random() < 0.35) {
-          blobs.push({
-            x: CX + (Math.random() - 0.5) * 100,
-            y: streamTipY + (Math.random() - 0.5) * 40,
-            vx: (Math.random() - 0.5) * 1.2,
-            vy: -0.5 - Math.random() * 1.4,
-            r: 6, maxR: 45 + Math.random() * 55,
-            alpha: 0.25 + Math.random() * 0.25,
-            warm: true,
-            age: 0, maxAge: 60 + Math.floor(Math.random() * 40)
-          });
-        }
-
-        /* Draw blobs */
-        ctx.globalCompositeOperation = 'lighter';
-        for (var i = blobs.length - 1; i >= 0; i--) {
-          var b = blobs[i];
-          b.x  += b.vx;  b.vx *= 0.96;
-          b.y  += b.vy;  b.vy *= 0.96;
-          b.r   = Math.min(b.r + 1.2 + pourP * 1.0, b.maxR);
-          b.age++;
-          if (b.age >= b.maxAge) { blobs.splice(i,1); continue; }
-
-          var lp      = b.age / b.maxAge;
-          var fadeIn  = lp < 0.2 ? lp / 0.2 : 1;
-          var fadeOut = lp > 0.55 ? 1 - (lp - 0.55) / 0.45 : 1;
-          var a       = b.alpha * fadeIn * fadeOut;
-
-          var g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-          if (b.warm) {
-            g.addColorStop(0,    'rgba(235,210,165,' + a + ')');
-            g.addColorStop(0.4,  'rgba(200,160, 95,' + (a*0.65) + ')');
-            g.addColorStop(0.75, 'rgba(150,100, 40,' + (a*0.3) + ')');
-            g.addColorStop(1,    'rgba( 80, 40,  8,0)');
-          } else {
-            g.addColorStop(0,    'rgba(255,252,245,' + a + ')');
-            g.addColorStop(0.3,  'rgba(245,230,205,' + (a*0.8) + ')');
-            g.addColorStop(0.65, 'rgba(210,180,130,' + (a*0.4) + ')');
-            g.addColorStop(1,    'rgba(150,100, 50,0)');
-          }
-          ctx.beginPath();
-          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-          ctx.fillStyle = g;
-          ctx.fill();
         }
         ctx.globalCompositeOperation = 'source-over';
-
-        /* Fade stream into the liquid as surface fills */
-        if (streamTipY > 0) {
-          var sAlpha = Math.max(0, 1 - pourP * 1.8);
-          stream.style.opacity = sAlpha;
-        }
-
-        if (elapsed < POUR_MS) {
-          requestAnimationFrame(draw);
-        } else {
-          /* Done — dissolve overlay to reveal website */
-          stream.style.transition = 'opacity 0.4s ease';
-          stream.style.opacity    = '0';
-          intro.classList.add('dissolve');
-          setTimeout(function() {
-            intro.remove();
-            document.body.classList.remove('intro-active');
-            document.querySelectorAll('.reveal').forEach(function(el) {
-              if (el.getBoundingClientRect().top < window.innerHeight + 120)
-                el.classList.add('visible');
-            });
-          }, 1250);
-        }
       }
 
-      /* Tiny delay so layout is complete before we read innerWidth/Height */
-      setTimeout(function() {
-        sizeCanvas();
-        paintBg();
+      if (clearRadius > 20 && spreadP < 0.98) {
+        var ringR=clearRadius*.92, ringW=clearRadius*.28, ra=(1-spreadP)*.55;
+        var gr=ctx.createRadialGradient(CX,CY_POUR,Math.max(0,ringR-ringW),CX,CY_POUR,ringR);
+        gr.addColorStop(0,'rgba(235,210,165,0)'); gr.addColorStop(.4,'rgba(235,210,165,'+(ra*.6)+')');
+        gr.addColorStop(.75,'rgba(220,185,130,'+ra+')'); gr.addColorStop(1,'rgba(200,155,80,0)');
+        ctx.beginPath(); ctx.arc(CX,CY_POUR,ringR,0,Math.PI*2); ctx.fillStyle=gr; ctx.fill();
+      }
+
+      if (tipY > 10 && spreadP < 0.6) {
+        ctx.globalCompositeOperation = 'destination-out';
+        for (var i=0;i<3;i++) {
+          var ty=tipY*(.3+i*.25), tR=8+spreadP*20;
+          var tg=ctx.createRadialGradient(CX,ty,0,CX,ty,tR);
+          tg.addColorStop(0,'rgba(0,0,0,.4)'); tg.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(CX,ty,tR,0,Math.PI*2); ctx.fillStyle=tg; ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      stream.style.opacity = Math.max(0,1-spreadP*2.5).toFixed(2);
+
+      if (totalP < 1) {
         requestAnimationFrame(draw);
-      }, 60);
+      } else {
+        stream.style.opacity = '0';
+        intro.classList.add('dissolve');
+        setTimeout(function() {
+          intro.remove();
+          document.body.classList.remove('intro-active');
+          document.querySelectorAll('.reveal').forEach(function(el) {
+            if (el.getBoundingClientRect().top < window.innerHeight + 120) el.classList.add('visible');
+          });
+        }, 1450);
+      }
+    }
 
-    }); /* end DOMContentLoaded */
-
-  </script>
+    setTimeout(function() { sizeCanvas(); paintMask(); requestAnimationFrame(draw); }, 50);
+  });
+</script>
 </body>
 </html>
