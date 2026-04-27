@@ -659,46 +659,71 @@
     var ctx = canvas.getContext('2d');
 
     var W, H;
-    // Stream origin: upper-left corner area
-    var OX, OY;
-    // Impact point: slightly left of centre, vertically mid-screen
-    var IX, IY;
+    /* The spout sits in the upper-left, partially off-screen.
+       Liquid exits horizontally-ish to the right, then gravity
+       pulls it down so it lands roughly centre-screen.
+       This is real projectile physics:
+         x(t) = x0 + vx * t
+         y(t) = y0 + vy * t + 0.5 * g * t^2
+       We pick vx / vy / g so the parabola starts upper-left,
+       curves downward, and hits the pool near centre. */
+    var OX, OY;      // spout tip position (bottom of pitcher spout)
+    var IX, IY;      // where stream hits the pool surface
+    var VX, VY, G;   // projectile params
 
     function resize() {
       W = canvas.width  = window.innerWidth;
       H = canvas.height = window.innerHeight;
-      OX = W * 0.04;  OY = H * 0.0;   // pours from top-left edge
-      IX = W * 0.48;  IY = H * 0.54;  // lands near centre-bottom area
+
+      // ZOOMED IN — source is just off the upper-left of the visible frame,
+      // very close. The stream only travels a short distance, like the reference photo
+      // where you see a thick close-up pour into the cup.
+      OX = W * 0.18;   // upper-left, but still ON screen so stream is visible from start
+      OY = H * 0.05;   // near the very top
+
+      // Impact: centre-ish, slightly right — where the liquid hits the pool
+      IX = W * 0.50;
+      IY = H * 0.54;
+
+      var T = 1.0;
+      VX = (IX - OX) / T;
+      VY = -H * 0.02;
+      G  = 2 * ((IY - OY) - VY * T) / (T * T);
     }
     resize();
     window.addEventListener('resize', resize);
 
+    /* Given normalised t in [0,1], return x,y on the parabola */
+    function pourPoint(t) {
+      return {
+        x: OX + VX * t,
+        y: OY + VY * t + 0.5 * G * t * t
+      };
+    }
+
     /* ── Timing ── */
-    var STREAM_GROW_MS = 1100;   // stream travels to impact point
-    var FILL_START_MS  = 900;    // pool starts forming
-    var SPLASH_START_MS= 1100;   // splash particles fire
-    var TOTAL_MS       = 5200;   // full animation duration
+    var STREAM_GROW_MS  = 1000;
+    var FILL_START_MS   = 800;
+    var SPLASH_START_MS = 1000;
+    var TOTAL_MS        = 5400;
     var START = null;
 
     /* ── Easing ── */
     function easeOut3(t) { return 1 - Math.pow(1 - t, 3); }
     function easeInOut(t){ return t < .5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; }
 
-    /* ── Bezier point along stream arc ── */
-    // Control point bends the arc rightward and slightly down (gravity feel)
-    function arcPoint(t) {
-      var cx = W * 0.28, cy = H * 0.18; // control point
-      var mt = 1 - t;
-      return {
-        x: mt*mt*OX + 2*mt*t*cx + t*t*IX,
-        y: mt*mt*OY + 2*mt*t*cy + t*t*IY
-      };
-    }
-
-    /* ── Stream width taper (thicker at top, narrows mid-arc) ── */
+    /* ── Stream width ──
+       Real poured liquid: thick at nozzle, thins as it accelerates,
+       never widens until it hits the surface. */
+    var _streamTime = 0; // updated each frame so streamWidth can use time-based wobble
     function streamWidth(t) {
-      // Thicker pour nozzle, tapers mid, widens again at impact
-      return 7 + Math.sin(t * Math.PI) * 3 + (t > 0.85 ? (t-0.85)*30 : 0);
+      // Spout is wide (~14px), stream thins as liquid accelerates downward.
+      // Width ∝ 1/sqrt(speed). Speed increases with fall.
+      var speed = Math.sqrt(1 + G * t * 1.2);
+      var w = 14 / speed;
+      // Very slight turbulence wobble in lower half only
+      if (t > 0.6) w += Math.sin(t * 22 + _streamTime * 0.003) * 0.35;
+      return Math.max(2.5, w);
     }
 
     /* ── Splash particles ── */
@@ -777,6 +802,7 @@
       var totalP  = Math.min(elapsed / TOTAL_MS, 1);
 
       waveOffset = elapsed * 0.001;
+      _streamTime = elapsed;
 
       /* Clear to dark background */
       ctx.globalCompositeOperation = 'source-over';
@@ -812,13 +838,14 @@
         // Wave surface
         drawWaveSurface(poolTop, poolAlpha, fillRatio);
 
-        // Impact foam/crema circle
+        // Impact foam — creamy milk hitting coffee surface
         if (phaseA_p < 0.95) {
-          var foamR = 18 + fillRatio * 12;
+          var foamR = 28 + fillRatio * 20;
           var fg = ctx.createRadialGradient(IX, poolTop + 2, 0, IX, poolTop + 2, foamR);
-          fg.addColorStop(0,   'rgba(220,175,100,0.55)');
-          fg.addColorStop(0.5, 'rgba(180,130,65,0.3)');
-          fg.addColorStop(1,   'rgba(150,100,40,0)');
+          fg.addColorStop(0,   'rgba(240,225,195,0.75)');
+          fg.addColorStop(0.3, 'rgba(210,185,145,0.50)');
+          fg.addColorStop(0.7, 'rgba(170,130,80,0.25)');
+          fg.addColorStop(1,   'rgba(120,80,30,0)');
           ctx.beginPath();
           ctx.arc(IX, poolTop + 2, foamR, 0, Math.PI * 2);
           ctx.fillStyle = fg;
@@ -842,68 +869,126 @@
         });
       }
 
-      /* ── 2. Pour stream arc (bezier, tapered, with inner highlight) ── */
+      /* ── 2. Pour stream ── */
       var streamP = Math.min(elapsed / STREAM_GROW_MS, 1);
-      if (streamP > 0) {
-        // Draw stream as a series of circles along the bezier path
-        // which gives natural taper + can wriggle slightly
-        var segments = 55;
-        for (var s = 0; s < segments; s++) {
-          var t0 = (s / segments) * streamP;
-          var t1 = ((s + 1) / segments) * streamP;
-          if (t1 > streamP) break;
 
-          var p0 = arcPoint(t0);
-          var p1 = arcPoint(t1);
+      // Stop drawing stream once the pool has risen to cover the impact point
+      var currentPoolTop = (phaseA_p > 0)
+        ? (phaseA_p < 1
+            ? H - easeOut3(phaseA_p) * (H - IY * 0.38)
+            : H - easeOut3(1) * (H - IY * 0.38) - easeInOut(phaseB_p) * (H - easeOut3(1) * (H - IY * 0.38) + 20))
+        : H;
+      // Fade stream out as pool rises toward impact
+      var streamFade = Math.max(0, Math.min(1, (currentPoolTop - IY) / (H * 0.15)));
 
-          // Width tapers and wobbles slightly (turbulence)
-          var tMid  = (t0 + t1) / 2;
-          var wBase = streamWidth(tMid);
-          // Turbulence increases as stream accelerates downward
-          var turb  = Math.sin(s * 0.7 + elapsed * 0.012) * (tMid * 2.5);
-          var wx    = p0.x + turb * 0.4;
+      if (streamP > 0 && streamFade > 0) {
 
-          // Outer dark coffee body
-          ctx.beginPath();
-          ctx.moveTo(p0.x, p0.y);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.strokeStyle = 'rgba(100,55,18,0.95)';
-          ctx.lineWidth   = wBase;
-          ctx.lineCap     = 'round';
-          ctx.stroke();
+        var CX = OX + (IX - OX) * 0.85;
+        var CY = OY + (IY - OY) * 0.20;
 
-          // Inner lighter highlight (gives liquid depth)
-          ctx.beginPath();
-          ctx.moveTo(p0.x, p0.y);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.strokeStyle = 'rgba(190,130,60,0.55)';
-          ctx.lineWidth   = wBase * 0.38;
-          ctx.lineCap     = 'round';
-          ctx.stroke();
+        // Width: thick at source, ALSO thick at impact (liquid splays as it hits surface)
+        // In the reference, the stream doesn't taper to nothing — it stays substantial
+        var wTop = W * 0.055;
+        var wBot = W * 0.038;  // still wide at impact — doesn't thin to a needle
 
-          // Tiny droplets breaking off near the end of stream (turbulent tail)
-          if (tMid > 0.55 && tMid < 0.85 && Math.random() < 0.18) {
+        ctx.save();
+        ctx.lineCap  = 'round';
+        ctx.lineJoin = 'round';
+
+        var SEG = 70;
+
+        var glowPasses = [
+          { wScale: 2.6, alpha: 0.06 * streamFade, r: 245, g: 235, b: 220 },
+          { wScale: 1.9, alpha: 0.12 * streamFade, r: 240, g: 225, b: 205 },
+          { wScale: 1.4, alpha: 0.22 * streamFade, r: 235, g: 215, b: 190 },
+          { wScale: 1.05,alpha: 0.50 * streamFade, r: 228, g: 205, b: 175 },
+          { wScale: 0.72,alpha: 0.82 * streamFade, r: 220, g: 195, b: 160 },
+          { wScale: 0.42,alpha: 1.00 * streamFade, r: 210, g: 185, b: 148 },
+        ];
+
+        glowPasses.forEach(function(pass) {
+          for (var s = 0; s < SEG; s++) {
+            var t0 = (s / SEG) * streamP;
+            var t1 = Math.min(((s + 1.5) / SEG) * streamP, streamP);
+
+            var x0 = (1-t0)*(1-t0)*OX + 2*(1-t0)*t0*CX + t0*t0*IX;
+            var y0 = (1-t0)*(1-t0)*OY + 2*(1-t0)*t0*CY + t0*t0*IY;
+            var x1 = (1-t1)*(1-t1)*OX + 2*(1-t1)*t1*CX + t1*t1*IX;
+            var y1 = (1-t1)*(1-t1)*OY + 2*(1-t1)*t1*CY + t1*t1*IY;
+
+            // Skip segments that are below the pool surface
+            if (y0 > currentPoolTop && y1 > currentPoolTop) continue;
+
+            var tMid = (t0 + t1) * 0.5;
+            var w = (wTop + (wBot - wTop) * tMid) * pass.wScale;
+
             ctx.beginPath();
-            ctx.arc(
-              wx + (Math.random() - 0.5) * wBase * 2,
-              p0.y + (Math.random() - 0.5) * 6,
-              1 + Math.random() * 2.5,
-              0, Math.PI * 2
-            );
-            ctx.fillStyle = 'rgba(160,100,40,0.7)';
-            ctx.fill();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.lineWidth   = Math.max(1, w);
+            ctx.strokeStyle = 'rgba(' + pass.r + ',' + pass.g + ',' + pass.b + ',' + pass.alpha + ')';
+            ctx.stroke();
           }
+        });
+
+        // Specular highlight — upper edge
+        for (var s = 0; s < SEG; s++) {
+          var t0 = (s / SEG) * streamP;
+          var t1 = Math.min(((s + 1.5) / SEG) * streamP, streamP);
+
+          var x0 = (1-t0)*(1-t0)*OX + 2*(1-t0)*t0*CX + t0*t0*IX;
+          var y0 = (1-t0)*(1-t0)*OY + 2*(1-t0)*t0*CY + t0*t0*IY;
+          var x1 = (1-t1)*(1-t1)*OX + 2*(1-t1)*t1*CX + t1*t1*IX;
+          var y1 = (1-t1)*(1-t1)*OY + 2*(1-t1)*t1*CY + t1*t1*IY;
+
+          if (y0 > currentPoolTop && y1 > currentPoolTop) continue;
+
+          var tdx = x1 - x0, tdy = y1 - y0;
+          var tlen = Math.sqrt(tdx*tdx + tdy*tdy) || 1;
+          var nx = -tdy / tlen, ny = tdx / tlen;
+
+          var tMid = (t0 + t1) * 0.5;
+          var w   = wTop + (wBot - wTop) * tMid;
+          var off = w * 0.28;
+          var hlA = (1 - tMid * 0.5) * 0.75 * streamP * streamFade;
+
+          ctx.beginPath();
+          ctx.moveTo(x0 + nx * off, y0 + ny * off);
+          ctx.lineTo(x1 + nx * off, y1 + ny * off);
+          ctx.lineWidth   = Math.max(0.5, w * 0.18);
+          ctx.strokeStyle = 'rgba(255,252,245,' + hlA + ')';
+          ctx.stroke();
         }
 
-        // Stream source glow at pour origin
-        var srcG = ctx.createRadialGradient(OX, OY, 0, OX, OY, 14);
-        srcG.addColorStop(0,   'rgba(160,100,40,0.6)');
-        srcG.addColorStop(0.5, 'rgba(120,70,25,0.3)');
-        srcG.addColorStop(1,   'rgba(0,0,0,0)');
-        ctx.beginPath();
-        ctx.arc(OX, OY, 14, 0, Math.PI * 2);
-        ctx.fillStyle = srcG;
-        ctx.fill();
+        // Shadow — lower edge
+        for (var s = 0; s < SEG; s++) {
+          var t0 = (s / SEG) * streamP;
+          var t1 = Math.min(((s + 1.5) / SEG) * streamP, streamP);
+
+          var x0 = (1-t0)*(1-t0)*OX + 2*(1-t0)*t0*CX + t0*t0*IX;
+          var y0 = (1-t0)*(1-t0)*OY + 2*(1-t0)*t0*CY + t0*t0*IY;
+          var x1 = (1-t1)*(1-t1)*OX + 2*(1-t1)*t1*CX + t1*t1*IX;
+          var y1 = (1-t1)*(1-t1)*OY + 2*(1-t1)*t1*CY + t1*t1*IY;
+
+          if (y0 > currentPoolTop && y1 > currentPoolTop) continue;
+
+          var tdx = x1 - x0, tdy = y1 - y0;
+          var tlen = Math.sqrt(tdx*tdx + tdy*tdy) || 1;
+          var nx = tdy / tlen, ny = -tdx / tlen;
+
+          var tMid = (t0 + t1) * 0.5;
+          var w   = wTop + (wBot - wTop) * tMid;
+          var off = w * 0.30;
+
+          ctx.beginPath();
+          ctx.moveTo(x0 + nx * off, y0 + ny * off);
+          ctx.lineTo(x1 + nx * off, y1 + ny * off);
+          ctx.lineWidth   = Math.max(0.5, w * 0.22);
+          ctx.strokeStyle = 'rgba(160,130,90,' + (0.30 * streamFade) + ')';
+          ctx.stroke();
+        }
+
+        ctx.restore();
       }
 
       /* ── 3. Splash particles ── */
